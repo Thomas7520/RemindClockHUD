@@ -73,7 +73,7 @@ public class RemindTimerHUD {
                 config.redText.get(), config.greenText.get(), config.blueText.get(), config.alphaText.get(), config.rgbSpeedText.get(),
                 config.redBackground.get(), config.greenBackground.get(), config.blueBackground.get(), config.alphaBackground.get(),
                 config.rgbSpeedBackground.get(), config.textRightToLeftDirection.get(), config.backgroundRightToLeftDirection.get(),
-                config.textWidth.get(), config.backgroundWidth.get(), config.textHeight.get(), config.backgroundHeight.get(), config.posX.get(), config.posY.get());
+                config.posX.get(), config.posY.get());
 
         //LOGGER.info(RemindTimerUtil.getGlobalAlarmsMap().size() + " alarms loaded");
         //LOGGER.info(RemindTimerUtil.getGlobalRemindsMap().size() + " reminds loaded");

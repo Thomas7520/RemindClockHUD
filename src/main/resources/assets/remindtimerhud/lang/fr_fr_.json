@@ -1,3 +1,5 @@
 {
-  "text.config.needhelp": "Besoin d'aide? Bug? Lien Discord"
+  "text.config.needhelp": "Besoin d'aide? Bug? Lien Discord",
+
+  "text.config.formathours12": "Format 12h"
 }

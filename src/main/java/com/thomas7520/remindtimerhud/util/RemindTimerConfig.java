@@ -27,9 +27,8 @@ public class RemindTimerConfig {
         public ForgeConfigSpec.IntValue redText, greenText, blueText, alphaText, rgbSpeedText;
         public ForgeConfigSpec.IntValue redBackground, greenBackground, blueBackground, alphaBackground, rgbSpeedBackground;
         public ForgeConfigSpec.BooleanValue textRightToLeftDirection, backgroundRightToLeftDirection;
-        public ForgeConfigSpec.EnumValue<HUDPosition.EnumWidth> textWidth, backgroundWidth;
-        public ForgeConfigSpec.EnumValue<HUDPosition.EnumHeight> textHeight, backgroundHeight;
-        public ForgeConfigSpec.ConfigValue<Float> posX, posY;
+        public ForgeConfigSpec.DoubleValue posX;
+        public ForgeConfigSpec.DoubleValue posY;
 
         Client(ForgeConfigSpec.Builder builder) {
             builder.comment("General settings").push(CATEGORY_GENERAL);
@@ -59,14 +58,9 @@ public class RemindTimerConfig {
             textRightToLeftDirection = builder.define("textRightToLeftDirection", false);
             backgroundRightToLeftDirection = builder.define("backgroundRightToLeftDirection", false);
 
-            textWidth = builder.defineEnum("textWidth", HUDPosition.EnumWidth.PERCENT_0);
-            textHeight = builder.defineEnum("textHeight", HUDPosition.EnumHeight.PERCENT_0);
 
-            backgroundWidth = builder.defineEnum("backgroundWidth", HUDPosition.EnumWidth.PERCENT_0);
-            backgroundHeight = builder.defineEnum("backgroundHeight", HUDPosition.EnumHeight.PERCENT_0);
-
-            posX = builder.define("Value of x clock screen in percentage", 0f);
-            posY = builder.define("Value of y clock screen in percentage", 0f);
+            posX = builder.comment("Value of x clock screen in percentage").defineInRange("posX",0, 0, 100d);
+            posY = builder.comment("Value of y clock screen in percentage").defineInRange("posY", 0,0 , 100d);
         }
     }
 }

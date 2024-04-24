@@ -15,6 +15,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 
@@ -25,10 +26,10 @@ public class PositionScreen extends Screen {
     private int waveCounterText;
 
     private boolean clicked;
-    private int percentageX;
-    private int percentageY;
-    private int x;
-    private int y;
+    private double percentageX;
+    private double percentageY;
+    private double x;
+    private double y;
 
     public PositionScreen(Component pTitle) {
         super(pTitle);
@@ -74,17 +75,24 @@ public class PositionScreen extends Screen {
         super.render(graphics, mouseX, mouseY, p_282465_);
 
         if(clicked) {
-            percentageX = (int) ((float) mouseX / minecraft.getWindow().getGuiScaledWidth() * 100);
-            percentageY = (int) ((float) mouseY / minecraft.getWindow().getGuiScaledHeight() * 100);
+            percentageX = (double) mouseX / minecraft.getWindow().getGuiScaledWidth() * 100;
+            percentageY = (double) mouseY / minecraft.getWindow().getGuiScaledHeight() * 100;
 
+            percentageX = Math.min(100, Math.max(0, percentageX));
+            percentageY = Math.min(100, Math.max(0, percentageY));
+
+            System.out.println(percentageX + " - " + percentageY);
             clock.setPosX(percentageX);
             clock.setPosY(percentageY);
         }
 
+        for(int i = 1; i < 4; i++) {
+            graphics.fill((width / 4) * (i), 0, (width / 4) * (i) + 2, height, Color.RED.getRGB());
+
+            graphics.fill(0, (height / 4) * (i), width, (height / 4) * (i) + 2, Color.RED.getRGB());
+        }
 
         String dateFormatted = clock.getDateFormatted();
-
-
 
         graphics.drawCenteredString(this.font, this.title, 2, 20, 16777215);
 
@@ -95,19 +103,24 @@ public class PositionScreen extends Screen {
 
         // WORKING FOR EVERY SIZE, LETS GO !!
 
-        x = (int) (clock.getPosX() / 100.0 * minecraft.getWindow().getGuiScaledWidth());
-        y = (int) (clock.getPosY() / 100.0 * minecraft.getWindow().getGuiScaledHeight());
+        x = (float) (clock.getPosX() / 100.0 * minecraft.getWindow().getGuiScaledWidth());
+        y = (float) (clock.getPosY() / 100.0 * minecraft.getWindow().getGuiScaledHeight());
 
         double rectWidth = font.width(dateFormatted) + 3;
         double rectHeight = 12;
 
         x = Math.max(0, x);
-        x = (int) Math.min(width - rectWidth, x);
+        x = Math.min(width - rectWidth, x);
 
-        y = Math.max(y, 0);
-        y = (int) Math.min(y, height - rectHeight);
-        int textX = x + 2;
-        int textY = y + 2;
+        y = Math.max(y, 2);
+        y = Math.min(y, height - rectHeight);
+
+        int textX = 2;
+        int textY = 2;
+
+        graphics.pose().pushPose();
+        graphics.pose().translate(x,y, 0);
+
 
         if(clock.isDrawBackground()) {
             if (clock.getRgbModeBackground() == HUDMode.RGB_WAVE) {
@@ -130,7 +143,7 @@ public class PositionScreen extends Screen {
                     colorEnd = (colorEnd & 0x00FFFFFF) | (clock.getAlphaBackground() << 24);
 
                     // Dessiner une colonne du rectangle avec le dégradé de couleur
-                    drawGradientRect((x + i), y, x + i + 1, y + rectHeight, 0, colorStart, colorEnd, colorStart, colorEnd);
+                    drawGradientRect(( i), 0, i + 1, 0 + rectHeight, 0, colorStart, colorEnd, colorStart, colorEnd);
                 }
             } else if (clock.getRgbModeBackground() == HUDMode.RGB_CYCLE) {
 
@@ -150,11 +163,11 @@ public class PositionScreen extends Screen {
 
                 colorEnd = (colorEnd & 0x00FFFFFF) | (clock.getAlphaBackground() << 24);
                 // Dessiner une colonne du rectangle avec le dégradé de couleur
-                drawGradientRect(x, y, x + rectWidth, y + rectHeight, 0, colorStart, colorStart, colorEnd, colorEnd);
+                drawGradientRect(0, 0, 0 + rectWidth, 0 + rectHeight, 0, colorStart, colorStart, colorEnd, colorEnd);
             } else {
                 int colorBackground = (clock.getAlphaBackground() << 24 | clock.getRedBackground() << 16 | clock.getGreenBackground() << 8 | clock.getBlueBackground());
 
-                graphics.fill(x, y - 2, (int) (x + rectWidth), y + 8 + 4, colorBackground);
+                graphics.fill(0, 0 - 2, (int) (0 + rectWidth), 0 + 8 + 4, colorBackground);
             }
 
         }
@@ -191,6 +204,25 @@ public class PositionScreen extends Screen {
 
             graphics.drawString(font, dateFormatted, textX, textY, colorText, false);
         }
+
+        graphics.pose().popPose();
+
+    }
+
+    @Override
+    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
+
+        float xOffset = 0;
+        float yOffset = 0;
+
+        switch (pKeyCode) {
+            case GLFW.GLFW_KEY_LEFT -> xOffset-=0.5f;
+            case GLFW.GLFW_KEY_RIGHT -> xOffset+=0.5f;
+            case GLFW.GLFW_KEY_UP -> yOffset-=0.5f;
+            case GLFW.GLFW_KEY_DOWN -> yOffset+=0.5f;
+        }
+
+        return super.keyPressed(pKeyCode, pScanCode, pModifiers);
     }
 
     private int getColor(String dateFormatted, int i) {

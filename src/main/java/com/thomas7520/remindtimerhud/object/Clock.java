@@ -17,13 +17,11 @@ public class Clock {
     private int redText, greenText, blueText, alphaText, rgbSpeedText;
     private int redBackground, greenBackground, blueBackground, alphaBackground, rgbSpeedBackground;
     private boolean textRightToLeftDirection, backgroundRightToLeftDirection;
-    private HUDPosition.EnumWidth textWidth, backgroundWidth;
-    private HUDPosition.EnumHeight textHeight, backgroundHeight;
 
-    private float posX;
-    private float posY;
+    private double posX;
+    private double posY;
 
-    public Clock(String formatText, boolean drawText, boolean drawBackground, boolean use12HourFormat, HUDMode rgbModeText, HUDMode rgbModeBackground, int redText, int greenText, int blueText, int alphaText, int rgbSpeedText, int redBackground, int greenBackground, int blueBackground, int alphaBackground, int rgbSpeedBackground, boolean textRightToLeftDirection, boolean backgroundRightToLeftDirection, HUDPosition.EnumWidth textWidth, HUDPosition.EnumWidth backgroundWidth, HUDPosition.EnumHeight textHeight, HUDPosition.EnumHeight backgroundHeight, float posX, float posY) {
+    public Clock(String formatText, boolean drawText, boolean drawBackground, boolean use12HourFormat, HUDMode rgbModeText, HUDMode rgbModeBackground, int redText, int greenText, int blueText, int alphaText, int rgbSpeedText, int redBackground, int greenBackground, int blueBackground, int alphaBackground, int rgbSpeedBackground, boolean textRightToLeftDirection, boolean backgroundRightToLeftDirection, double posX, double posY) {
         this.formatText = formatText;
         this.drawText = drawText;
         this.drawBackground = drawBackground;
@@ -42,10 +40,6 @@ public class Clock {
         this.rgbSpeedBackground = rgbSpeedBackground;
         this.textRightToLeftDirection = textRightToLeftDirection;
         this.backgroundRightToLeftDirection = backgroundRightToLeftDirection;
-        this.textWidth = textWidth;
-        this.backgroundWidth = backgroundWidth;
-        this.textHeight = textHeight;
-        this.backgroundHeight = backgroundHeight;
         this.posX = posX;
         this.posY = posY;
     }
@@ -196,51 +190,19 @@ public class Clock {
         this.backgroundRightToLeftDirection = backgroundRightToLeftDirection;
     }
 
-    public HUDPosition.EnumWidth getTextWidth() {
-        return textWidth;
-    }
-
-    public void setTextWidth(HUDPosition.EnumWidth textWidth) {
-        this.textWidth = textWidth;
-    }
-
-    public HUDPosition.EnumWidth getBackgroundWidth() {
-        return backgroundWidth;
-    }
-
-    public void setBackgroundWidth(HUDPosition.EnumWidth backgroundWidth) {
-        this.backgroundWidth = backgroundWidth;
-    }
-
-    public HUDPosition.EnumHeight getTextHeight() {
-        return textHeight;
-    }
-
-    public void setTextHeight(HUDPosition.EnumHeight textHeight) {
-        this.textHeight = textHeight;
-    }
-
-    public HUDPosition.EnumHeight getBackgroundHeight() {
-        return backgroundHeight;
-    }
-
-    public void setBackgroundHeight(HUDPosition.EnumHeight backgroundHeight) {
-        this.backgroundHeight = backgroundHeight;
-    }
-
-    public float getPosX() {
+    public double getPosX() {
         return posX;
     }
 
-    public void setPosX(float posX) {
+    public void setPosX(double posX) {
         this.posX = posX;
     }
 
-    public float getPosY() {
+    public double getPosY() {
         return posY;
     }
 
-    public void setPosY(float posY) {
+    public void setPosY(double posY) {
         this.posY = posY;
     }
 
@@ -265,10 +227,8 @@ public class Clock {
                 ", rgbSpeedBackground=" + rgbSpeedBackground +
                 ", textRightToLeftDirection=" + textRightToLeftDirection +
                 ", backgroundRightToLeftDirection=" + backgroundRightToLeftDirection +
-                ", textWidth=" + textWidth +
-                ", backgroundWidth=" + backgroundWidth +
-                ", textHeight=" + textHeight +
-                ", backgroundHeight=" + backgroundHeight +
+                ", posX=" + posX +
+                ", posY=" + posY +
                 '}';
     }
 

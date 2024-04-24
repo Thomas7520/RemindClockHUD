@@ -1,3 +1,26 @@
 {
-  "text.config.needhelp": "Need Help? Bug? Discord Link"
+  "config.needhelp": "Need Help? Bug? Discord Link",
+
+  "config.formathours12": "12 hours format",
+  "config.formathours24": "24 hours format",
+
+  "config.display_position": "Display position",
+
+  "config.text_mode": "Text Mode",
+  "config.text_mode_static": "STATIC",
+  "config.text_mode_wave": "WAVE",
+  "config.text_mode_cycle": "CYCLE",
+
+  "config.enable_background": "Enable background",
+  "config.background_mode": "background Mode",
+  "config.background_mode_static": "STATIC",
+  "config.background_mode_wave": "WAVE",
+  "config.background_mode_cycle": "CYCLE",
+
+  "text.red": "Red",
+  "text.green": "Green",
+  "text.blue": "Blue",
+  "text.alpha": "Alpha"
+
+
 }

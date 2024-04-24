@@ -703,8 +703,6 @@ public class ClockScreen extends Screen {
     }
 
     private void saveConfig() {
-
-        System.out.println(clock);
         RemindTimerConfig.Client config = RemindTimerConfig.CLIENT;
 
         config.formatText.set(clock.getFormatText());
@@ -731,12 +729,6 @@ public class ClockScreen extends Screen {
 
         config.textRightToLeftDirection.set(clock.isTextRightToLeftDirection());
         config.backgroundRightToLeftDirection.set(clock.isBackgroundRightToLeftDirection());
-
-        config.textWidth.set(clock.getTextWidth());
-        config.textHeight.set(clock.getTextHeight());
-
-        config.backgroundWidth.set(clock.getBackgroundWidth());
-        config.backgroundHeight.set(clock.getBackgroundHeight());
     }
 
     public int getWidthPosition() {

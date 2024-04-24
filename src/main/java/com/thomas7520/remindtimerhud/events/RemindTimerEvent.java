@@ -120,19 +120,24 @@ public class RemindTimerEvent {
         Font font = Minecraft.getInstance().font;
         String dateFormatted = clock.getDateFormatted();
 
-        int x = (int) (clock.getPosX() / 100.0 * event.getWindow().getGuiScaledWidth());
-        int y = (int) (clock.getPosY() / 100.0 * event.getWindow().getGuiScaledHeight());
+        float x = (float) (clock.getPosX() / 100.0 * event.getWindow().getGuiScaledWidth());
+        float y = (float) (clock.getPosY() / 100.0 * event.getWindow().getGuiScaledHeight());
 
         double rectWidth = font.width(dateFormatted) + 3;
         double rectHeight = 12;
 
         x = Math.max(0, x);
-        x = (int) Math.min(width - rectWidth, x);
+        x = (float) Math.min(width - rectWidth, x);
 
-        y = Math.max(y, 0);
-        y = (int) Math.min(y, height - rectHeight);
-        int textX = x + 2;
-        int textY = y + 2;
+        y = Math.max(y, 2);
+        y = (float) Math.min(y, height - rectHeight);
+
+        int textX = 2;
+        int textY = 2;
+
+        event.getGuiGraphics().pose().pushPose();
+        event.getGuiGraphics().pose().translate(x,y, 0);
+
 
         if(clock.isDrawBackground()) {
             if (clock.getRgbModeBackground() == HUDMode.RGB_WAVE) {
@@ -155,7 +160,7 @@ public class RemindTimerEvent {
                     colorEnd = (colorEnd & 0x00FFFFFF) | (clock.getAlphaBackground() << 24);
 
                     // Dessiner une colonne du rectangle avec le dégradé de couleur
-                    drawGradientRect((x + i), y, x + i + 1, y + rectHeight, 0, colorStart, colorEnd, colorStart, colorEnd);
+                    drawGradientRect(( i), 0, i + 1, 0 + rectHeight, 0, colorStart, colorEnd, colorStart, colorEnd);
                 }
             } else if (clock.getRgbModeBackground() == HUDMode.RGB_CYCLE) {
 
@@ -175,15 +180,11 @@ public class RemindTimerEvent {
 
                 colorEnd = (colorEnd & 0x00FFFFFF) | (clock.getAlphaBackground() << 24);
                 // Dessiner une colonne du rectangle avec le dégradé de couleur
-                drawGradientRect(x, y, x + rectWidth, y + rectHeight, 0, colorStart, colorStart, colorEnd, colorEnd);
+                drawGradientRect(0, 0, 0 + rectWidth, 0 + rectHeight, 0, colorStart, colorStart, colorEnd, colorEnd);
             } else {
-
                 int colorBackground = (clock.getAlphaBackground() << 24 | clock.getRedBackground() << 16 | clock.getGreenBackground() << 8 | clock.getBlueBackground());
 
-                RenderSystem.enableBlend();
-                RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
-
-                event.getGuiGraphics().fill( x, y - 2, (int) (x + rectWidth), y + 8 + 4, colorBackground);
+                event.getGuiGraphics().fill(0, 0 - 2, (int) (0 + rectWidth), 0 + 8 + 4, colorBackground);
             }
 
         }
@@ -220,6 +221,8 @@ public class RemindTimerEvent {
 
             event.getGuiGraphics().drawString(font, dateFormatted, textX, textY, colorText, false);
         }
+
+        event.getGuiGraphics().pose().popPose();
 
         RenderSystem.disableBlend();
     }
