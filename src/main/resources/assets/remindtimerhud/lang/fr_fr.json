@@ -1,0 +1,34 @@
+{
+  "remindtimerhud.title": "RemindTimerHUD",
+
+  "config.clock": "Horloge",
+  "config.alarm": "Alarme",
+  "config.chronometer": "Chronomètre",
+  "config.remind": "Minuteur/Rappel",
+
+  "config.needhelp": "Besoin d'aide? Bug? Lien Discord",
+
+  "clock.title": "Options Horloge",
+
+  "clock.available_formats": "Formats disponibles :",
+  "clock.formatters12": "Format 12 heures",
+  "clock.formatters24": "Format 24 heures",
+  "clock.display_position": "Changer la position",
+  "clock.text_mode": "Texte Mode : %s",
+  "clock.enable_background": "Activer Fond",
+  "clock.disable_background": "Désactiver Fond",
+  "clock.background_mode": "Fond Mode : %s",
+  "clock.date_format": "Format Date",
+
+  "clock.static": "STATIQUE",
+  "clock.wave": "VAGUE",
+  "clock.cycle": "CYCLE",
+
+  "text.red": "Rouge",
+  "text.green": "Vert",
+  "text.blue": "Blue",
+  "text.alpha": "Transparence",
+  "text.speed": "Vitesse RVB",
+  "text.direction_lr": "Gauche à Droite",
+  "text.direction_rl": "Droite à Gauche"
+}

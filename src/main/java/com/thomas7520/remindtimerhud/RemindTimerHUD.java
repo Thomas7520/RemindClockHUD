@@ -2,8 +2,6 @@ package com.thomas7520.remindtimerhud;
 
 
 import com.thomas7520.remindtimerhud.object.Clock;
-import com.thomas7520.remindtimerhud.util.HUDMode;
-import com.thomas7520.remindtimerhud.util.HUDPosition;
 import com.thomas7520.remindtimerhud.util.RemindTimerConfig;
 import com.thomas7520.remindtimerhud.util.RemindTimerUtil;
 import net.minecraft.client.KeyMapping;
@@ -11,7 +9,6 @@ import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLConfig;
@@ -21,7 +18,6 @@ import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Objects;
 
 import static com.thomas7520.remindtimerhud.RemindTimerHUD.MODID;

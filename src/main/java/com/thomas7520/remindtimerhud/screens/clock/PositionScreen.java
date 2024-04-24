@@ -10,7 +10,6 @@ import com.thomas7520.remindtimerhud.RemindTimerHUD;
 import com.thomas7520.remindtimerhud.object.Clock;
 import com.thomas7520.remindtimerhud.util.HUDMode;
 import com.thomas7520.remindtimerhud.util.RemindTimerConfig;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -31,8 +30,8 @@ public class PositionScreen extends Screen {
     private double x;
     private double y;
 
-    public PositionScreen(Component pTitle) {
-        super(pTitle);
+    public PositionScreen() {
+        super(Component.empty());
 
         clock = RemindTimerHUD.getClock();
 
@@ -81,7 +80,6 @@ public class PositionScreen extends Screen {
             percentageX = Math.min(100, Math.max(0, percentageX));
             percentageY = Math.min(100, Math.max(0, percentageY));
 
-            System.out.println(percentageX + " - " + percentageY);
             clock.setPosX(percentageX);
             clock.setPosY(percentageY);
         }
@@ -106,8 +104,8 @@ public class PositionScreen extends Screen {
         x = (float) (clock.getPosX() / 100.0 * minecraft.getWindow().getGuiScaledWidth());
         y = (float) (clock.getPosY() / 100.0 * minecraft.getWindow().getGuiScaledHeight());
 
-        double rectWidth = font.width(dateFormatted) + 3;
-        double rectHeight = 12;
+        int rectWidth = font.width(dateFormatted) + 3;
+        int rectHeight = 12;
 
         x = Math.max(0, x);
         x = Math.min(width - rectWidth, x);
@@ -123,7 +121,7 @@ public class PositionScreen extends Screen {
 
 
         if(clock.isDrawBackground()) {
-            if (clock.getRgbModeBackground() == HUDMode.RGB_WAVE) {
+            if (clock.getRgbModeBackground() == HUDMode.WAVE) {
                 for (int i = 0; i < rectWidth; i++) {
                     float hueStart = 1.0F - ((i - waveCounterBackground) / 360f); // Inversion de la couleur
 
@@ -143,9 +141,9 @@ public class PositionScreen extends Screen {
                     colorEnd = (colorEnd & 0x00FFFFFF) | (clock.getAlphaBackground() << 24);
 
                     // Dessiner une colonne du rectangle avec le dégradé de couleur
-                    drawGradientRect(( i), 0, i + 1, 0 + rectHeight, 0, colorStart, colorEnd, colorStart, colorEnd);
+                    drawGradientRect(x+i, y, i + 1, y+rectHeight, 0, colorStart, colorEnd, colorStart, colorEnd);
                 }
-            } else if (clock.getRgbModeBackground() == HUDMode.RGB_CYCLE) {
+            } else if (clock.getRgbModeBackground() == HUDMode.CYCLE) {
 
                 float hueStart = 1.0F - ((float) (waveCounterBackground) / 360f); // Inversion de la couleur
 
@@ -163,17 +161,17 @@ public class PositionScreen extends Screen {
 
                 colorEnd = (colorEnd & 0x00FFFFFF) | (clock.getAlphaBackground() << 24);
                 // Dessiner une colonne du rectangle avec le dégradé de couleur
-                drawGradientRect(0, 0, 0 + rectWidth, 0 + rectHeight, 0, colorStart, colorStart, colorEnd, colorEnd);
+                drawGradientRect(x, y, x+rectWidth, y+rectHeight, 0, colorStart, colorStart, colorEnd, colorEnd);
             } else {
                 int colorBackground = (clock.getAlphaBackground() << 24 | clock.getRedBackground() << 16 | clock.getGreenBackground() << 8 | clock.getBlueBackground());
 
-                graphics.fill(0, 0 - 2, (int) (0 + rectWidth), 0 + 8 + 4, colorBackground);
+                graphics.fill(0, -2, rectWidth, 8 + 4, colorBackground);
             }
 
         }
 
 
-        if(clock.getRgbModeText() == HUDMode.RGB_WAVE) {
+        if(clock.getRgbModeText() == HUDMode.WAVE) {
             int textCharX = textX;
 
             for (int i = 0; i < dateFormatted.length(); i++) {
@@ -184,7 +182,7 @@ public class PositionScreen extends Screen {
                 graphics.drawString(font, String.valueOf(c), textCharX, textY, color, false);
                 textCharX += minecraft.font.width(String.valueOf(c));
             }
-        } else if (clock.getRgbModeText() == HUDMode.RGB_CYCLE) {
+        } else if (clock.getRgbModeText() == HUDMode.CYCLE) {
 
             float hueStart = 1.0F - ((float) (waveCounterText) / 255); // Inversion de la couleur
 
@@ -251,7 +249,6 @@ public class PositionScreen extends Screen {
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder buffer = tessellator.getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-
 
         buffer.vertex(right, top, z).color((coltr & 0x00ff0000) >> 16, (coltr & 0x0000ff00) >> 8,
                 (coltr & 0x000000ff), (coltr & 0xff000000) >>> 24).endVertex();

@@ -10,23 +10,15 @@ import com.thomas7520.remindtimerhud.RemindTimerHUD;
 import com.thomas7520.remindtimerhud.object.Clock;
 import com.thomas7520.remindtimerhud.object.Remind;
 import com.thomas7520.remindtimerhud.screens.MenuScreen;
-import com.thomas7520.remindtimerhud.screens.clock.ClockScreen;
-import com.thomas7520.remindtimerhud.screens.clock.PositionScreen;
 import com.thomas7520.remindtimerhud.util.HUDMode;
 import com.thomas7520.remindtimerhud.util.RemindTimerUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.components.toasts.ToastComponent;
-import net.minecraft.client.gui.screens.ChatScreen;
-import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
-import net.minecraftforge.client.gui.overlay.GuiOverlayManager;
-import net.minecraftforge.client.gui.overlay.NamedGuiOverlay;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -57,35 +49,32 @@ public class RemindTimerEvent {
     private static int ticksElasped;
 
     @SubscribeEvent
-    public static void tickEvent(TickEvent.RenderTickEvent event) {
-        if (event.phase == TickEvent.Phase.END) {
+    public static void tickEvent(TickEvent.ClientTickEvent event) {
+        if(event.phase != TickEvent.Phase.END) return;
 
-            if(ticksElasped % 20 == 0) {
-                for (Remind remind : RemindTimerUtil.getReminds()) {
-                    if (remind.isPaused() || remind.isRinging()) continue;
+        if(ticksElasped % 20 == 0) {
+            for (Remind remind : RemindTimerUtil.getReminds()) {
+                if (remind.isPaused() || remind.isRinging()) continue;
 
-                    if (remind.getTime() <= 0) {
-                        remind.setRinging(true);
-                        // make ringing, or show message, icon, ...
-                        continue;
-                    }
-
-                    remind.setTime(remind.getTime() - 1);
+                if (remind.getTime() <= 0) {
+                    remind.setRinging(true);
+                    // make ringing, or show message, icon, ...
+                    continue;
                 }
-                ticksElasped = 0;
-            }
 
-            ticksElasped++;
-
-            if(ticksElasped % 5 != 0) return;
-            if (Minecraft.getInstance().player != null) {
-                waveCounterText += (RemindTimerHUD.getClock().getRgbSpeedText() - 1) / (100 - 1) * (10 - 1) + 1;
-                waveCounterBackground += (RemindTimerHUD.getClock().getRgbSpeedBackground() - 1) / (100 - 1) * (20 - 1) + 1;
+                remind.setTime(remind.getTime() - 1);
             }
+            ticksElasped = 0;
         }
 
-    }
+        ticksElasped++;
 
+
+        if (Minecraft.getInstance().player != null) {
+            waveCounterText += (RemindTimerHUD.getClock().getRgbSpeedText() - 1) / (100 - 1) * (10 - 1) + 1;
+            waveCounterBackground += (RemindTimerHUD.getClock().getRgbSpeedBackground() - 1) / (100 - 1) * (20 - 1) + 1;
+        }
+    }
     private static int waveCounterBackground;
     private static int waveCounterText;
     @SubscribeEvent
@@ -105,7 +94,7 @@ public class RemindTimerEvent {
         }
 
 
-        //RemindTimerUtil.circleDoubleProgress(event.getGuiGraphics().guiWidth() / 2, event.getGuiGraphics().guiHeight() / 2, 10F, 6F, 180, 180F, 64, new Color(91, 13, 13, 200));
+        //RemindTimerUtil.circleDoubleProgress(event.getGuievent.getGuiGraphics()().guiWidth() / 2, event.getGuievent.getGuiGraphics()().guiHeight() / 2, 10F, 6F, 180, 180F, 64, new Color(91, 13, 13, 200));
 
 
         RenderSystem.enableBlend();
@@ -117,20 +106,21 @@ public class RemindTimerEvent {
 
         int width = event.getGuiGraphics().guiWidth();
         int height = event.getGuiGraphics().guiHeight();
+
         Font font = Minecraft.getInstance().font;
         String dateFormatted = clock.getDateFormatted();
 
         float x = (float) (clock.getPosX() / 100.0 * event.getWindow().getGuiScaledWidth());
         float y = (float) (clock.getPosY() / 100.0 * event.getWindow().getGuiScaledHeight());
 
-        double rectWidth = font.width(dateFormatted) + 3;
-        double rectHeight = 12;
+        int rectWidth = font.width(dateFormatted) + 3;
+        int rectHeight = 12;
 
         x = Math.max(0, x);
-        x = (float) Math.min(width - rectWidth, x);
+        x = Math.min(width - rectWidth, x);
 
         y = Math.max(y, 2);
-        y = (float) Math.min(y, height - rectHeight);
+        y = Math.min(y, height - rectHeight);
 
         int textX = 2;
         int textY = 2;
@@ -140,7 +130,7 @@ public class RemindTimerEvent {
 
 
         if(clock.isDrawBackground()) {
-            if (clock.getRgbModeBackground() == HUDMode.RGB_WAVE) {
+            if (clock.getRgbModeBackground() == HUDMode.WAVE) {
                 for (int i = 0; i < rectWidth; i++) {
                     float hueStart = 1.0F - ((i - waveCounterBackground) / 360f); // Inversion de la couleur
 
@@ -160,9 +150,9 @@ public class RemindTimerEvent {
                     colorEnd = (colorEnd & 0x00FFFFFF) | (clock.getAlphaBackground() << 24);
 
                     // Dessiner une colonne du rectangle avec le dégradé de couleur
-                    drawGradientRect(( i), 0, i + 1, 0 + rectHeight, 0, colorStart, colorEnd, colorStart, colorEnd);
+                    drawGradientRect(x+i, y, i + 1, y+rectHeight, 0, colorStart, colorEnd, colorStart, colorEnd);
                 }
-            } else if (clock.getRgbModeBackground() == HUDMode.RGB_CYCLE) {
+            } else if (clock.getRgbModeBackground() == HUDMode.CYCLE) {
 
                 float hueStart = 1.0F - ((float) (waveCounterBackground) / 360f); // Inversion de la couleur
 
@@ -180,17 +170,17 @@ public class RemindTimerEvent {
 
                 colorEnd = (colorEnd & 0x00FFFFFF) | (clock.getAlphaBackground() << 24);
                 // Dessiner une colonne du rectangle avec le dégradé de couleur
-                drawGradientRect(0, 0, 0 + rectWidth, 0 + rectHeight, 0, colorStart, colorStart, colorEnd, colorEnd);
+                drawGradientRect(x, y, x+rectWidth, y+rectHeight, 0, colorStart, colorStart, colorEnd, colorEnd);
             } else {
                 int colorBackground = (clock.getAlphaBackground() << 24 | clock.getRedBackground() << 16 | clock.getGreenBackground() << 8 | clock.getBlueBackground());
 
-                event.getGuiGraphics().fill(0, 0 - 2, (int) (0 + rectWidth), 0 + 8 + 4, colorBackground);
+                event.getGuiGraphics().fill(0, -2, rectWidth, 8 + 4, colorBackground);
             }
 
         }
 
 
-        if(clock.getRgbModeText() == HUDMode.RGB_WAVE) {
+        if(clock.getRgbModeText() == HUDMode.WAVE) {
             int textCharX = textX;
 
             for (int i = 0; i < dateFormatted.length(); i++) {
@@ -201,7 +191,7 @@ public class RemindTimerEvent {
                 event.getGuiGraphics().drawString(font, String.valueOf(c), textCharX, textY, color, false);
                 textCharX += font.width(String.valueOf(c));
             }
-        } else if (clock.getRgbModeText() == HUDMode.RGB_CYCLE) {
+        } else if (clock.getRgbModeText() == HUDMode.CYCLE) {
 
             float hueStart = 1.0F - ((float) (waveCounterText) / 255); // Inversion de la couleur
 

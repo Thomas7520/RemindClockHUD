@@ -1,26 +1,34 @@
 {
+  "remindtimerhud.title": "RemindTimerHUD",
+  
+  "config.clock": "Clock",
+  "config.alarm": "Alarm",
+  "config.chronometer": "Chronometer",
+  "config.remind": "Timer/Reminder",
+  
   "config.needhelp": "Need Help? Bug? Discord Link",
 
-  "config.formathours12": "12 hours format",
-  "config.formathours24": "24 hours format",
+  "clock.title": "Clock Settings",
 
-  "config.display_position": "Display position",
+  "clock.available_formats": "Available formats :",
+  "clock.formatters12": "12 Hours Format",
+  "clock.formatters24": "24 Hours Format",
+  "clock.display_position": "Change Display Position",
+  "clock.text_mode": "Text Mode : %s",
+  "clock.enable_background": "Enable Background",
+  "clock.disable_background": "Disable Background",
+  "clock.background_mode": "Background Mode : %s",
+  "clock.date_format": "Date Format",
 
-  "config.text_mode": "Text Mode",
-  "config.text_mode_static": "STATIC",
-  "config.text_mode_wave": "WAVE",
-  "config.text_mode_cycle": "CYCLE",
-
-  "config.enable_background": "Enable background",
-  "config.background_mode": "background Mode",
-  "config.background_mode_static": "STATIC",
-  "config.background_mode_wave": "WAVE",
-  "config.background_mode_cycle": "CYCLE",
+  "clock.static": "STATIC",
+  "clock.wave": "WAVE",
+  "clock.cycle": "CYCLE",
 
   "text.red": "Red",
   "text.green": "Green",
   "text.blue": "Blue",
-  "text.alpha": "Alpha"
-
-
+  "text.alpha": "Alpha",
+  "text.speed": "RGB Speed",
+  "text.direction_lr": "LEFT TO RIGHT",
+  "text.direction_rl": "RIGHT TO LEFT"
 }

@@ -1,7 +1,6 @@
 package com.thomas7520.remindtimerhud.object;
 
 import com.thomas7520.remindtimerhud.util.HUDMode;
-import com.thomas7520.remindtimerhud.util.HUDPosition;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;

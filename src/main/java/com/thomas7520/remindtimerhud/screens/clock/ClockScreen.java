@@ -1,7 +1,6 @@
 package com.thomas7520.remindtimerhud.screens.clock;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -12,7 +11,6 @@ import com.thomas7520.remindtimerhud.object.Clock;
 import com.thomas7520.remindtimerhud.screens.buttons.CustomButton;
 import com.thomas7520.remindtimerhud.screens.buttons.InformationButton;
 import com.thomas7520.remindtimerhud.util.HUDMode;
-import com.thomas7520.remindtimerhud.util.HUDPosition;
 import com.thomas7520.remindtimerhud.util.RemindTimerConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -29,37 +27,24 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.client.gui.widget.ForgeSlider;
-import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Supplier;
 
 public class ClockScreen extends Screen {
 
 
     private final Clock clock;
-    // todo à côté du textbox pour l'heure, mettre un mini bouton avec un "?" et quand tu vises,
-    //  todo hover avec tous les trucs possibles (mm, ss, hh, etc.. et laissez la possibilité de AM & PM ?)
     private int guiLeft;
     private int guiTop;
-
-    private Button buttonWidth;
-    private Button buttonHeight;
-
     private EditBox dateBox;
 
-    private HUDPosition.EnumWidth widthPosition = HUDPosition.EnumWidth.PERCENT_50;
-
-    private HUDPosition.EnumHeight heightPosition = HUDPosition.EnumHeight.PERCENT_50;
 
     private String dateFormatted;
 
-    private final String[] stateValues = {I18n.get("text.red "), I18n.get("text.green "), I18n.get("text.blue "), I18n.get("text.alpha ")};
+    private final String[] stateValues = {"text.red", "text.green", "text.blue", "text.alpha"};
     private ForgeSlider sliderRedText, sliderGreenText, sliderBlueText, sliderAlphaText, sliderRGBText;
     private ForgeSlider sliderRedBackground, sliderGreenBackground, sliderBlueBackground, sliderAlphaBackground, sliderRGBBackground;
     private final Screen lastScreen;
@@ -72,7 +57,7 @@ public class ClockScreen extends Screen {
     private CustomButton buttonBackgroundState;
 
     public ClockScreen(Screen lastScreen, Clock clock) {
-        super(Component.translatable("remindtimerhud.clockscreen.title"));
+        super(Component.translatable("clock.title"));
         this.lastScreen = lastScreen;
         this.clock = clock;
     }
@@ -84,83 +69,66 @@ public class ClockScreen extends Screen {
         this.guiTop = (this.height / 2);
 
 
+        dateBox = new EditBox(font, guiLeft / 4, guiTop - 80 + 30 + 24, 151, 20, Component.nullToEmpty(null)){
 
-        /*addRenderableWidget(*/buttonWidth = new CustomButton(guiLeft - 50 , guiTop - 10, 100, 20, Component.literal(widthPosition.name()), p_93751_ -> {
-            widthPosition = getNextWidthOption(widthPosition);
-            buttonWidth.setMessage(Component.literal(widthPosition.name()));
-
-        }, Supplier::get)/*)*/;
-
-        /*addRenderableWidget(*/buttonHeight = new CustomButton(guiLeft - 50 , guiTop - 30, 100, 20, Component.literal(heightPosition.name()), p_93751_ -> {
-            heightPosition = getNextHeightOption(heightPosition);
-            buttonHeight.setMessage(Component.literal(heightPosition.name()));
-        }, Supplier::get)/*)*/;
-
-        /*this.addRenderableWidget(*/dateBox = new EditBox(font, guiLeft / 4, guiTop - 80 + 30 + 24, 151, 20, Component.nullToEmpty(null)){
-            @Override
-            public boolean charTyped(char p_94122_, int p_94123_) {
-                waveCounterText =0;
-                return super.charTyped(p_94122_, p_94123_);
-            }
-        }/*)*/;
+        };
         dateBox.setCanLoseFocus(true);
         dateBox.setMaxLength(100);
-        dateBox.setTooltip(Tooltip.create(Component.translatable("Date Format")));
+        dateBox.setTooltip(Tooltip.create(Component.translatable("clock.date_format")));
         dateBox.setValue(clock.getFormatText());
+        dateBox.setResponder(newDate -> {
+            clock.setFormatText(newDate);
+            RemindTimerConfig.CLIENT.formatText.set(newDate);
+        });
 
-//        dateBox.setValue("%day %dd %smonth %yyyy");
-
-        formatHourButton = new CustomButton(guiLeft / 4 - 2, guiTop - 80 + 30 + 24 + 27, 154, 20, Component.translatable(clock.isUse12HourFormat() ? "12 hours format" : "24 hours format"), p_93751_ -> {
+        formatHourButton = new CustomButton(guiLeft / 4 - 2, guiTop - 80 + 30 + 24 + 27, 154, 20, Component.translatable(clock.isUse12HourFormat() ? "clock.formatters12" : "clock.formatters24"), p_93751_ -> {
             clock.setUse12HourFormat(!clock.isUse12HourFormat());
-            formatHourButton.setMessage(Component.translatable(clock.isUse12HourFormat() ? "12 hours format" : "24 hours format"));
+            formatHourButton.setMessage(Component.translatable(clock.isUse12HourFormat() ? "clock.formatters12" : "clock.formatters24"));
         }, Supplier::get);
 
-        CustomButton displayMode = new CustomButton(guiLeft - 200, guiTop - 80 + 30 + 24 * 2 + 27, 154, 20, Component.translatable("Change display position"), p_93751_ -> {
-            minecraft.setScreen(new PositionScreen(Component.literal("Position")));
+        CustomButton displayMode = new CustomButton(guiLeft - 200, guiTop - 80 + 30 + 24 * 2 + 27, 154, 20, Component.translatable("clock.display_position"), p_93751_ -> {
+            minecraft.setScreen(new PositionScreen());
         }, Supplier::get);
 
-        CustomButton rgbTextMode = new CustomButton(guiLeft / 4 - 2, guiTop - 80 + 30 + 24 * 3 + 27, 154, 20, Component.translatable("RGB Text Mode " + clock.getRgbModeText().name()), p_93751_ -> {
+        CustomButton rgbTextMode = new CustomButton(guiLeft / 4 - 2, guiTop - 80 + 30 + 24 * 3 + 27, 154, 20, Component.translatable("clock.text_mode", clock.getRgbModeText().name()), p_93751_ -> {
             clock.setRgbModeText(getNextMode(clock.getRgbModeText()));
-            sliderRGBText.visible = clock.getRgbModeText() == HUDMode.RGB_WAVE || clock.getRgbModeText() == HUDMode.RGB_CYCLE;
-            buttonWaveDirection.visible = clock.getRgbModeText() == HUDMode.RGB_WAVE;
-            p_93751_.setMessage(Component.literal("RGB Mode" + clock.getRgbModeText().name()));
+            sliderRGBText.visible = clock.getRgbModeText() == HUDMode.WAVE || clock.getRgbModeText() == HUDMode.CYCLE;
+            buttonWaveDirection.visible = clock.getRgbModeText() == HUDMode.WAVE;
+            p_93751_.setMessage(Component.translatable("clock.text_mode", clock.getRgbModeText().name()));
         }, Supplier::get);
 
-        CustomButton rgbBackgroundMode = new CustomButton(guiLeft / 4 - 2, guiTop - 80 + 30 + 24 * 3 + 27, 154, 20, Component.translatable("RGB Background Mode " + clock.getRgbModeBackground()), p_93751_ -> {
+        CustomButton rgbBackgroundMode = new CustomButton(guiLeft / 4 - 2, guiTop - 80 + 30 + 24 * 3 + 27, 154, 20, Component.translatable("clock.background_mode", clock.getRgbModeBackground().name()), p_93751_ -> {
             clock.setRgbModeBackground(getNextMode(clock.getRgbModeBackground()));
-            sliderRGBBackground.visible = clock.getRgbModeBackground() == HUDMode.RGB_WAVE || clock.getRgbModeBackground() == HUDMode.RGB_CYCLE;
-            buttonWaveDirectionBackground.visible = clock.getRgbModeBackground() == HUDMode.RGB_WAVE;
-            p_93751_.setMessage(Component.literal("RGB Mode" + clock.getRgbModeBackground()));
+            sliderRGBBackground.visible = clock.getRgbModeBackground() == HUDMode.WAVE || clock.getRgbModeBackground() == HUDMode.CYCLE;
+            buttonWaveDirectionBackground.visible = clock.getRgbModeBackground() == HUDMode.WAVE;
+            p_93751_.setMessage(Component.translatable("clock.background_mode", clock.getRgbModeBackground().name()));
         }, Supplier::get);
 
-        buttonWaveDirection = new CustomButton(guiLeft / 4 - 2, guiTop - 80 + 30 + 24 * 4 + 27, 100, 20, Component.translatable("Direction " + (clock.isTextRightToLeftDirection() ? "RIGHT TO LEFT" : "LEFT TO RIGHT")), p_93751_ -> {
+        buttonWaveDirection = new CustomButton(guiLeft / 4 - 2, guiTop - 80 + 30 + 24 * 4 + 27, 100, 20, Component.translatable(clock.isTextRightToLeftDirection() ? "text.direction_lr" : "text.direction_rl"), p_93751_ -> {
             clock.setTextRightToLeftDirection(!clock.isTextRightToLeftDirection());
-            p_93751_.setMessage(Component.literal("Direction " + (clock.isTextRightToLeftDirection() ? "RIGHT TO LEFT" : "LEFT TO RIGHT")));
+            p_93751_.setMessage(Component.translatable(clock.isTextRightToLeftDirection() ? "text.direction_lr" : "text.direction_rl"));
         }, Supplier::get);
 
-        buttonWaveDirection.visible = clock.getRgbModeText() == HUDMode.RGB_WAVE;
+        buttonWaveDirection.visible = clock.getRgbModeText() == HUDMode.WAVE;
 
-        buttonWaveDirectionBackground = new CustomButton(guiLeft / 4 - 2, guiTop - 80 + 30 + 24 * 4 + 27, 100, 20, Component.translatable("Direction BG " + (clock.isBackgroundRightToLeftDirection() ? "RIGHT TO LEFT" : "LEFT TO RIGHT")), p_93751_ -> {
+        buttonWaveDirectionBackground = new CustomButton(guiLeft / 4 - 2, guiTop - 80 + 30 + 24 * 4 + 27, 100, 20, Component.translatable(clock.isBackgroundRightToLeftDirection() ? "text.direction_lr" : "text.direction_rl"), p_93751_ -> {
             clock.setBackgroundRightToLeftDirection(!clock.isBackgroundRightToLeftDirection());
-            p_93751_.setMessage(Component.literal("Direction BG" + (clock.isBackgroundRightToLeftDirection() ? "RIGHT TO LEFT" : "LEFT TO RIGHT")));
+            p_93751_.setMessage(Component.translatable(clock.isBackgroundRightToLeftDirection() ? "text.direction_lr" : "text.direction_rl"));
         }, Supplier::get);
 
-        buttonWaveDirectionBackground.visible = clock.getRgbModeBackground() == HUDMode.RGB_WAVE;
+        buttonWaveDirectionBackground.visible = clock.getRgbModeBackground() == HUDMode.WAVE;
 
 
 
-        buttonBackgroundState = new CustomButton(guiLeft / 4 - 2, guiTop - 80 + 30 + 24 * 4 + 27, 154, 20, Component.translatable("Draw background " + (clock.isDrawBackground() ? "ON" : "OFF")), p_93751_ -> {
+        buttonBackgroundState = new CustomButton(guiLeft / 4 - 2, guiTop - 80 + 30 + 24 * 4 + 27, 154, 20, Component.translatable(clock.isDrawBackground() ? "clock.disable_background" : "clock.enable_background"), p_93751_ -> {
             clock.setDrawBackground(!clock.isDrawBackground());
-            p_93751_.setMessage(Component.literal("draw bG" + (clock.isDrawBackground() ? "YES" : "NO")));
+            p_93751_.setMessage(Component.translatable(clock.isDrawBackground() ? "clock.disable_background" : "clock.enable_background"));
         }, Supplier::get);
-
-
-
 
 
         List<String> tooltipLines = new ArrayList<>();
         
-        tooltipLines.add("Liste available of formats :");
+        tooltipLines.add(Component.translatable("clock.available_formats").getString());
         
         tooltipLines.add("%hh");
         tooltipLines.add("%mm");
@@ -183,7 +151,7 @@ public class ClockScreen extends Screen {
 
 
         int i = 1;
-        sliderRedText = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.translatable(stateValues[i-1]), Component.empty()
+        sliderRedText = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.empty()
         , 0, 255, clock.getRedText(), 1, 1, true) {
 
 
@@ -213,7 +181,7 @@ public class ClockScreen extends Screen {
 
         i++;
 
-        sliderGreenText = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.translatable(stateValues[i-1]), Component.empty()
+        sliderGreenText = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.empty()
                 , 0, 255, clock.getGreenText(), 1, 1, true) {
 
             @Override
@@ -241,7 +209,7 @@ public class ClockScreen extends Screen {
 
         i++;
 
-        sliderBlueText = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.translatable(stateValues[i-1]), Component.empty()
+        sliderBlueText = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.empty()
                 , 0, 255, clock.getBlueText(), 1, 1, true) {
 
             @Override
@@ -273,7 +241,7 @@ public class ClockScreen extends Screen {
 
 
 
-        sliderAlphaText = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.translatable(stateValues[i-1]), Component.literal("%")
+        sliderAlphaText = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.literal("%")
                 , 0, 100, (100 * (clock.getAlphaText()-25)) / (255.0 - 25), 1, 1, true) {
 
             @Override
@@ -301,7 +269,6 @@ public class ClockScreen extends Screen {
 
             @Override
             protected void applyValue() {
-                System.out.println(getValueInt());
                 clock.setAlphaText(getValueInt());
                 super.applyValue();
             }
@@ -310,7 +277,7 @@ public class ClockScreen extends Screen {
 
         i++;
 
-        sliderRGBText = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.translatable("RGB Mode Speed"), Component.literal("%")
+        sliderRGBText = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.literal(Component.translatable("text.speed").getString() + " : "), Component.literal("%")
                 , 1, 100, clock.getRgbSpeedText(), 1, 1, true) {
 
             @Override
@@ -326,10 +293,10 @@ public class ClockScreen extends Screen {
             }
         };
 
-        sliderRGBText.visible = clock.getRgbModeText() == HUDMode.RGB_WAVE || clock.getRgbModeText() == HUDMode.RGB_CYCLE;
+        sliderRGBText.visible = clock.getRgbModeText() == HUDMode.WAVE || clock.getRgbModeText() == HUDMode.CYCLE;
 
         i = 1;
-        sliderRedBackground = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.translatable(stateValues[i-1]), Component.empty()
+        sliderRedBackground = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.empty()
                 , 0, 255, clock.getRedBackground(), 1, 1, true) {
 
 
@@ -358,7 +325,7 @@ public class ClockScreen extends Screen {
 
         i++;
 
-        sliderGreenBackground = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.translatable(stateValues[i-1]), Component.empty()
+        sliderGreenBackground = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.empty()
                 , 0, 255, clock.getGreenBackground(), 1, 1, true) {
 
             @Override
@@ -386,7 +353,7 @@ public class ClockScreen extends Screen {
 
         i++;
 
-        sliderBlueBackground = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.translatable(stateValues[i-1]), Component.empty()
+        sliderBlueBackground = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.empty()
                 , 0, 255, clock.getBlueBackground(), 1, 1, true) {
 
             @Override
@@ -417,7 +384,7 @@ public class ClockScreen extends Screen {
 
 
 
-        sliderAlphaBackground = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.translatable(stateValues[i-1]), Component.literal("%")
+        sliderAlphaBackground = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.literal("%")
                 , 0, 100, (100 * clock.getAlphaBackground()) / 255.0, 1, 1, true) {
 
             @Override
@@ -452,7 +419,7 @@ public class ClockScreen extends Screen {
 
         i++;
 
-        sliderRGBBackground = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.translatable("RGB Mode Speed"), Component.literal("%")
+        sliderRGBBackground = new ForgeSlider((int) ((width / 2) * 1.5f - 135 / 2), guiTop - 80 + 30 + i * 20 + i * 4 , 100, 20, Component.literal(Component.translatable("text.speed").getString() + " : "), Component.literal("%")
                 , 1, 100, clock.getRgbSpeedBackground(), 1, 1, true) {
 
             @Override
@@ -469,7 +436,7 @@ public class ClockScreen extends Screen {
             }
         };
 
-        sliderRGBBackground.visible = clock.getRgbModeBackground() == HUDMode.RGB_WAVE || clock.getRgbModeBackground() == HUDMode.RGB_CYCLE;
+        sliderRGBBackground.visible = clock.getRgbModeBackground() == HUDMode.WAVE || clock.getRgbModeBackground() == HUDMode.CYCLE;
 
 
         this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (p_280842_) -> {
@@ -565,7 +532,7 @@ public class ClockScreen extends Screen {
 
 
         if(clock.isDrawBackground()) {
-            if (clock.getRgbModeBackground() == HUDMode.RGB_WAVE) {
+            if (clock.getRgbModeBackground() == HUDMode.WAVE) {
                 for (int i = 0; i < rectWidth; i++) {
                     float hueStart = 1.0F - ((i - waveCounterBackground) / 360f); // Inversion de la couleur
 
@@ -588,7 +555,7 @@ public class ClockScreen extends Screen {
                     // Dessiner une colonne du rectangle avec le dégradé de couleur
                     drawGradientRect((rectX + i), rectY, rectX + i + 1, rectY + rectHeight, 0, colorStart, colorEnd, colorStart, colorEnd);
                 }
-            } else if (clock.getRgbModeBackground() == HUDMode.RGB_CYCLE) {
+            } else if (clock.getRgbModeBackground() == HUDMode.CYCLE) {
 
                 float hueStart = 1.0F - ((float) (waveCounterBackground) / 360f); // Inversion de la couleur
 
@@ -616,7 +583,7 @@ public class ClockScreen extends Screen {
         }
 
 
-        if(clock.getRgbModeText() == HUDMode.RGB_WAVE) {
+        if(clock.getRgbModeText() == HUDMode.WAVE) {
             for (int i = 0; i < dateFormatted.length(); i++) {
                 char c = dateFormatted.charAt(i);
 
@@ -635,7 +602,7 @@ public class ClockScreen extends Screen {
                 graphics.drawString(font, String.valueOf(c), x, y, color, false);
                 x += minecraft.font.width(String.valueOf(c));
             }
-        } else if (clock.getRgbModeText() == HUDMode.RGB_CYCLE) {
+        } else if (clock.getRgbModeText() == HUDMode.CYCLE) {
 
         float hueStart = 1.0F - ((float) (waveCounterText) / 255); // Inversion de la couleur
 
@@ -665,35 +632,11 @@ public class ClockScreen extends Screen {
         return super.mouseClicked(p_94695_, p_94696_, p_94697_);
     }
 
-
-    @Override
-    public boolean keyPressed(int p_96552_, int p_96553_, int p_96554_) {
-        if(!dateBox.isFocused()) {
-            if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), minecraft.options.keyUp.getKey().getValue()) || InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), InputConstants.KEY_UP)) {
-                heightPosition = getPreviousHeightOption(heightPosition);
-                buttonHeight.setMessage(Component.literal(heightPosition.name()));
-                return false;
-            }
-
-            if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), minecraft.options.keyDown.getKey().getValue()) || InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), InputConstants.KEY_DOWN)) {
-                heightPosition = getNextHeightOption(heightPosition);
-                buttonHeight.setMessage(Component.literal(heightPosition.name()));
-                return false;
-            }
-
-            if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), minecraft.options.keyLeft.getKey().getValue()) || InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), InputConstants.KEY_LEFT)) {
-                widthPosition = getPreviousWidthOption(widthPosition);
-                buttonWidth.setMessage(Component.literal(widthPosition.name()));
-                return false;
-            }
-
-            if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), minecraft.options.keyRight.getKey().getValue()) || InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), InputConstants.KEY_RIGHT)) {
-                widthPosition = getNextWidthOption(widthPosition);
-                buttonWidth.setMessage(Component.literal(widthPosition.name()));
-                return false;
-            }
-        }
-        return super.keyPressed(p_96552_, p_96553_, p_96554_);
+    private HUDMode getNextMode(HUDMode currentOption) {
+        HUDMode[] values = HUDMode.values();
+        int currentIndex = currentOption.ordinal();
+        int nextIndex = (currentIndex + 1) % values.length;
+        return values[nextIndex];
     }
 
     @Override
@@ -731,92 +674,6 @@ public class ClockScreen extends Screen {
         config.backgroundRightToLeftDirection.set(clock.isBackgroundRightToLeftDirection());
     }
 
-    public int getWidthPosition() {
-        switch (widthPosition) {
-
-            case PERCENT_0 -> {
-                return 2;
-            }
-
-            case PERCENT_25 -> {
-                return width / 4 - font.width(dateFormatted) / 2;
-            }
-
-            case PERCENT_50 -> {
-                return width / 2 - font.width(dateFormatted) / 2;
-            }
-
-            case PERCENT_75 -> {
-                return (int) ((width / 2) * 1.5f - font.width(dateFormatted) / 2);
-            }
-
-            case PERCENT_100 -> {
-                return width - font.width(dateFormatted) - 2;
-            }
-        }
-        return 0;
-    }
-
-    public int getHeightPosition() {
-        switch (heightPosition) {
-            case PERCENT_0 -> {
-                return 2;
-            }
-
-            case PERCENT_25 -> {
-                return height / 4;
-            }
-
-            case PERCENT_50 -> {
-                return height / 2;
-            }
-
-            case PERCENT_75 -> {
-                return (int) ((height / 2) * 1.5f);
-            }
-
-            case PERCENT_100 -> {
-                return height - 10;
-            }
-        }
-        return 0;
-    }
-
-    private HUDPosition.EnumHeight getNextHeightOption(HUDPosition.EnumHeight currentOption) {
-        HUDPosition.EnumHeight[] values = HUDPosition.EnumHeight.values();
-        int currentIndex = currentOption.ordinal();
-        int nextIndex = (currentIndex + 1) % values.length;
-        return values[nextIndex];
-    }
-
-    private HUDPosition.EnumHeight getPreviousHeightOption(HUDPosition.EnumHeight currentOption) {
-        HUDPosition.EnumHeight[] values = HUDPosition.EnumHeight.values();
-        int currentIndex = currentOption.ordinal();
-        int nextIndex = (currentIndex - 1 + values.length) % values.length;
-        return values[nextIndex];
-    }
-
-    private HUDPosition.EnumWidth getNextWidthOption(HUDPosition.EnumWidth currentOption) {
-        HUDPosition.EnumWidth[] values = HUDPosition.EnumWidth.values();
-        int currentIndex = currentOption.ordinal();
-        int nextIndex = (currentIndex + 1) % values.length;
-        return values[nextIndex];
-    }
-
-    private HUDPosition.EnumWidth getPreviousWidthOption(HUDPosition.EnumWidth currentOption) {
-        HUDPosition.EnumWidth[] values = HUDPosition.EnumWidth.values();
-        int currentIndex = currentOption.ordinal();
-        int nextIndex = (currentIndex - 1 + values.length) % values.length;
-        return values[nextIndex];
-    }
-
-    private HUDMode getNextMode(HUDMode currentOption) {
-        HUDMode[] values = HUDMode.values();
-        int currentIndex = currentOption.ordinal();
-        int nextIndex = (currentIndex + 1) % values.length;
-        return values[nextIndex];
-    }
-
     private void drawGradientRect(double left, double top, double right, double bottom, int z, int coltl, int coltr, int colbl,
                                   int colbr) {
 
@@ -842,9 +699,4 @@ public class ClockScreen extends Screen {
         tesselator.end();
         RenderSystem.disableBlend();
     }
-
-    public static Component genericValueLabel(Component p_231922_, Component p_231923_) {
-        return Component.translatable("options.generic_value", p_231922_, p_231923_);
-    }
-
 }
