@@ -57,7 +57,6 @@ public class RemindTimerConfig {
             textRightToLeftDirection = builder.define("textRightToLeftDirection", false);
             backgroundRightToLeftDirection = builder.define("backgroundRightToLeftDirection", false);
 
-
             posX = builder.comment("Value of x clock screen in percentage").defineInRange("posX",0, 0, 100d);
             posY = builder.comment("Value of y clock screen in percentage").defineInRange("posY", 0,0 , 100d);
         }

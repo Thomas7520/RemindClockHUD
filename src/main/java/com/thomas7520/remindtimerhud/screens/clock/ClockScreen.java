@@ -12,6 +12,7 @@ import com.thomas7520.remindtimerhud.screens.buttons.CustomButton;
 import com.thomas7520.remindtimerhud.screens.buttons.InformationButton;
 import com.thomas7520.remindtimerhud.util.HUDMode;
 import com.thomas7520.remindtimerhud.util.RemindTimerConfig;
+import net.minecraft.client.KeyboardHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -27,6 +28,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.client.gui.widget.ForgeSlider;
+import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -50,8 +52,8 @@ public class ClockScreen extends Screen {
     private final Screen lastScreen;
     private CustomButton formatHourButton;
 
-    private int waveCounterText;
-    private int waveCounterBackground;
+    private double waveCounterText;
+    private double waveCounterBackground;
 
     private CustomButton buttonWaveDirection, buttonWaveDirectionBackground;
     private CustomButton buttonBackgroundState;
@@ -534,9 +536,9 @@ public class ClockScreen extends Screen {
         if(clock.isDrawBackground()) {
             if (clock.getRgbModeBackground() == HUDMode.WAVE) {
                 for (int i = 0; i < rectWidth; i++) {
-                    float hueStart = 1.0F - ((i - waveCounterBackground) / 360f); // Inversion de la couleur
+                    double hueStart = 1.0F - ((i - waveCounterBackground) / 360f); // Inversion de la couleur
 
-                    float hueEnd = 1.0F - ((i + 1 - waveCounterBackground) / 360f); // Inversion de la couleur
+                    double hueEnd = 1.0F - ((i + 1 - waveCounterBackground) / 360f); // Inversion de la couleur
 
                     if (clock.isBackgroundRightToLeftDirection()) {
                         hueStart = (i + waveCounterBackground) / 360f; // Inversion de la couleur
@@ -544,9 +546,8 @@ public class ClockScreen extends Screen {
 
                     }
 
-
-                    int colorStart = Color.HSBtoRGB(hueStart, 1.0F, 1.0F);
-                    int colorEnd = Color.HSBtoRGB(hueEnd, 1.0F, 1.0F);
+                    int colorStart = Color.HSBtoRGB((float) hueStart, 1.0F, 1.0F);
+                    int colorEnd = Color.HSBtoRGB((float) hueEnd, 1.0F, 1.0F);
 
                     colorStart = (colorStart & 0x00FFFFFF) | (sliderAlphaBackground.getValueInt() << 24);
 
@@ -576,7 +577,6 @@ public class ClockScreen extends Screen {
                 drawGradientRect(rectX, rectY, rectX + rectWidth, rectY + rectHeight, 0, colorStart, colorStart, colorEnd, colorEnd);
             } else {
                 int colorBackground = (sliderAlphaBackground.getValueInt() << 24 | sliderRedBackground.getValueInt() << 16 | sliderGreenBackground.getValueInt() << 8 | sliderBlueBackground.getValueInt());
-
                 graphics.fill(width / 2 - font.width(dateFormatted) / 2 - 2, y - 2, width / 2 + font.width(dateFormatted) / 2 + 2, y + 8 + 2, colorBackground);
             }
 
@@ -587,27 +587,28 @@ public class ClockScreen extends Screen {
             for (int i = 0; i < dateFormatted.length(); i++) {
                 char c = dateFormatted.charAt(i);
 
-                float hue = 1.0F - ((float) (dateFormatted.length() - i + waveCounterText) * 2 / 360f); // Inversion de la couleur
+                double hue = 1.0F - ((float) (dateFormatted.length() - i + waveCounterText) * 2 / 360f); // Inversion de la couleur
 
                 if (clock.isTextRightToLeftDirection())
-                    hue = (float) (dateFormatted.length() + i + waveCounterText) * 2 / 360f; // Inversion de la couleur
+                    hue = (dateFormatted.length() + i + waveCounterText) * 2 / 360; // Inversion de la couleur
 
                 float saturation = 1.0F;
                 float brightness = 1.0F;
 
-                int color = Color.HSBtoRGB(hue, saturation, brightness);
+                int color = Color.HSBtoRGB((float) hue, saturation, brightness);
 
                 color = (color & 0x00FFFFFF) | (sliderAlphaText.getValueInt() << 24);
 
                 graphics.drawString(font, String.valueOf(c), x, y, color, false);
                 x += minecraft.font.width(String.valueOf(c));
+
             }
         } else if (clock.getRgbModeText() == HUDMode.CYCLE) {
 
         float hueStart = 1.0F - ((float) (waveCounterText) / 255); // Inversion de la couleur
 
             if (clock.isTextRightToLeftDirection()) {
-                hueStart = (float) ( waveCounterText) / 255; // Inversion de la couleur
+                hueStart = (float) (waveCounterText) / 255; // Inversion de la couleur
             }
 
 
@@ -649,10 +650,7 @@ public class ClockScreen extends Screen {
         RemindTimerConfig.Client config = RemindTimerConfig.CLIENT;
 
         config.formatText.set(clock.getFormatText());
-
-        config.drawText.set(clock.isDrawText());
-        config.drawBackground.set(clock.isDrawText());
-
+        config.drawBackground.set(clock.isDrawBackground());
         config.use12HourFormat.set(clock.isUse12HourFormat());
 
         config.rgbModeText.set(clock.getRgbModeText());

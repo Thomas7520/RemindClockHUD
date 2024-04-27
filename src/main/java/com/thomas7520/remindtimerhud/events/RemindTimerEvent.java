@@ -83,14 +83,14 @@ public class RemindTimerEvent {
 
         if(event.getOverlay() != VanillaGuiOverlay.AIR_LEVEL.type()) return;
 
-        for (Remind remind : RemindTimerUtil.getReminds()) {
-            if (remind.isPaused() || remind.isRinging()) continue;
-
-            event.getGuiGraphics().drawString(Minecraft.getInstance().font, remind.getTimeFormatted(), 0, 0, Color.CYAN.getRGB());
-        }
-
-
-        //RemindTimerUtil.circleDoubleProgress(event.getGuievent.getGuiGraphics()().guiWidth() / 2, event.getGuievent.getGuiGraphics()().guiHeight() / 2, 10F, 6F, 180, 180F, 64, new Color(91, 13, 13, 200));
+//        for (Remind remind : RemindTimerUtil.getReminds()) {
+//            if (remind.isPaused() || remind.isRinging()) continue;
+//
+//            event.getGuiGraphics().drawString(Minecraft.getInstance().font, remind.getTimeFormatted(), 0, 0, Color.CYAN.getRGB());
+//        }
+//
+//
+//        //RemindTimerUtil.circleDoubleProgress(event.getGuievent.getGuiGraphics()().guiWidth() / 2, event.getGuievent.getGuiGraphics()().guiHeight() / 2, 10F, 6F, 180, 180F, 64, new Color(91, 13, 13, 200));
 
 
         RenderSystem.enableBlend();

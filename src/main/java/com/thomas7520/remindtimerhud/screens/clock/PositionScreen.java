@@ -85,9 +85,9 @@ public class PositionScreen extends Screen {
         }
 
         for(int i = 1; i < 4; i++) {
-            graphics.fill((width / 4) * (i), 0, (width / 4) * (i) + 2, height, Color.RED.getRGB());
+            graphics.fill((width / 4) * (i), 0, (width / 4) * (i) + 1, height, Color.RED.getRGB());
 
-            graphics.fill(0, (height / 4) * (i), width, (height / 4) * (i) + 2, Color.RED.getRGB());
+            graphics.fill(0, (height / 4) * (i), width, (height / 4) * (i) + 1, Color.RED.getRGB());
         }
 
         String dateFormatted = clock.getDateFormatted();
@@ -213,12 +213,36 @@ public class PositionScreen extends Screen {
         float xOffset = 0;
         float yOffset = 0;
 
+
         switch (pKeyCode) {
             case GLFW.GLFW_KEY_LEFT -> xOffset-=0.5f;
             case GLFW.GLFW_KEY_RIGHT -> xOffset+=0.5f;
             case GLFW.GLFW_KEY_UP -> yOffset-=0.5f;
             case GLFW.GLFW_KEY_DOWN -> yOffset+=0.5f;
         }
+
+        x = (float) ((clock.getPosX()+xOffset) / 100.0 * minecraft.getWindow().getGuiScaledWidth());
+        y = (float) ((clock.getPosY()+yOffset) / 100.0 * minecraft.getWindow().getGuiScaledHeight());
+
+        int rectWidth = font.width(clock.getDateFormatted()) + 3;
+        int rectHeight = 12;
+
+        x = Math.max(0, x);
+        x = Math.min(width - rectWidth, x);
+
+        y = Math.max(y, 2);
+        y = Math.min(y, height - rectHeight);
+
+        percentageX = x / minecraft.getWindow().getGuiScaledWidth() * 100;
+        percentageY = y / minecraft.getWindow().getGuiScaledHeight() * 100;
+
+        percentageX = Math.min(100, Math.max(0, percentageX));
+        percentageY = Math.min(100, Math.max(0, percentageY));
+
+        clock.setPosX(percentageX);
+        clock.setPosY(percentageY);
+
+
 
         return super.keyPressed(pKeyCode, pScanCode, pModifiers);
     }
