@@ -64,8 +64,7 @@ public class RemindTimerHUD {
 
         RemindTimerConfig.Client config = RemindTimerConfig.CLIENT;
 
-        RemindTimerHUD.clock = new Clock(config.formatText.get()
-                , config.drawText.get(), config.drawBackground.get(), config.use12HourFormat.get(), config.rgbModeText.get(), config.rgbModeBackground.get(),
+        RemindTimerHUD.clock = new Clock(config.formatText.get(), config.drawBackground.get(), config.use12HourFormat.get(), config.rgbModeText.get(), config.rgbModeBackground.get(),
                 config.redText.get(), config.greenText.get(), config.blueText.get(), config.alphaText.get(), config.rgbSpeedText.get(),
                 config.redBackground.get(), config.greenBackground.get(), config.blueBackground.get(), config.alphaBackground.get(),
                 config.rgbSpeedBackground.get(), config.textRightToLeftDirection.get(), config.backgroundRightToLeftDirection.get(),

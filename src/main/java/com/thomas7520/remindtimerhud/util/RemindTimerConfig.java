@@ -21,7 +21,7 @@ public class RemindTimerConfig {
     public static class Client {
 
         public ForgeConfigSpec.ConfigValue<String> formatText;
-        public ForgeConfigSpec.BooleanValue drawText, drawBackground;
+        public ForgeConfigSpec.BooleanValue drawBackground;
         public ForgeConfigSpec.BooleanValue use12HourFormat;
         public ForgeConfigSpec.EnumValue<HUDMode> rgbModeText, rgbModeBackground;
         public ForgeConfigSpec.IntValue redText, greenText, blueText, alphaText, rgbSpeedText;
@@ -35,7 +35,6 @@ public class RemindTimerConfig {
 
             formatText = builder.comment("The format of the text that will be viewed in ui player.").define("formatText", "%day %dd %smonth %yyyy %hh:%mm:%ss");
 
-            drawText = builder.comment("Allow to draw text.").define("drawText", true);
             drawBackground = builder.comment("Allow to draw background for text.").define("drawBackground", true);
 
             use12HourFormat = builder.comment("Use 12 hour format or 24 format according to this value.").define("use12HourFormat", false);

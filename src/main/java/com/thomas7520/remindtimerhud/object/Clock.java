@@ -10,7 +10,7 @@ import java.util.Locale;
 public class Clock {
 
     private String formatText;
-    private boolean drawText, drawBackground;
+    private boolean drawBackground;
     private boolean use12HourFormat;
     private HUDMode rgbModeText, rgbModeBackground;
     private int redText, greenText, blueText, alphaText, rgbSpeedText;
@@ -20,9 +20,8 @@ public class Clock {
     private double posX;
     private double posY;
 
-    public Clock(String formatText, boolean drawText, boolean drawBackground, boolean use12HourFormat, HUDMode rgbModeText, HUDMode rgbModeBackground, int redText, int greenText, int blueText, int alphaText, int rgbSpeedText, int redBackground, int greenBackground, int blueBackground, int alphaBackground, int rgbSpeedBackground, boolean textRightToLeftDirection, boolean backgroundRightToLeftDirection, double posX, double posY) {
+    public Clock(String formatText, boolean drawBackground, boolean use12HourFormat, HUDMode rgbModeText, HUDMode rgbModeBackground, int redText, int greenText, int blueText, int alphaText, int rgbSpeedText, int redBackground, int greenBackground, int blueBackground, int alphaBackground, int rgbSpeedBackground, boolean textRightToLeftDirection, boolean backgroundRightToLeftDirection, double posX, double posY) {
         this.formatText = formatText;
-        this.drawText = drawText;
         this.drawBackground = drawBackground;
         this.use12HourFormat = use12HourFormat;
         this.rgbModeText = rgbModeText;
@@ -51,14 +50,6 @@ public class Clock {
 
     public void setFormatText(String formatText) {
         this.formatText = formatText;
-    }
-
-    public boolean isDrawText() {
-        return drawText;
-    }
-
-    public void setDrawText(boolean drawText) {
-        this.drawText = drawText;
     }
 
     public boolean isDrawBackground() {
@@ -209,7 +200,6 @@ public class Clock {
     public String toString() {
         return "Clock{" +
                 "formatText='" + formatText + '\'' +
-                ", drawText=" + drawText +
                 ", drawBackground=" + drawBackground +
                 ", use12HourFormat=" + use12HourFormat +
                 ", rgbModeText=" + rgbModeText +

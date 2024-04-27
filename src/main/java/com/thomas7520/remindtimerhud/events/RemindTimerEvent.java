@@ -79,13 +79,9 @@ public class RemindTimerEvent {
     private static int waveCounterText;
     @SubscribeEvent
     public static void hudEvent(RenderGuiOverlayEvent.Post event) {
-        // render chronometer & laps
-        // render time
+
+
         if(event.getOverlay() != VanillaGuiOverlay.AIR_LEVEL.type()) return;
-//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-//        LocalDateTime now = LocalDateTime.now();
-//        String date = dtf.format(now);
-//        Minecraft.getInstance().font.draw(event.getMatrixStack(), date, 0, 0, Color.CYAN.getRGB());
 
         for (Remind remind : RemindTimerUtil.getReminds()) {
             if (remind.isPaused() || remind.isRinging()) continue;
