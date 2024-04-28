@@ -19,10 +19,11 @@ public class Chronometer {
     private boolean textRightToLeftDirection, backgroundRightToLeftDirection;
     private double posX, posY;
     private long startTime, pauseTime;
-    private boolean stop;
+    private boolean enable, paused, started, idleRender;
     private final List<Long> laps = new ArrayList<>();
 
-    public Chronometer(ChronometerFormat format, boolean drawBackground, HUDMode rgbModeText, HUDMode rgbModeBackground, int redText, int greenText, int blueText, int alphaText, int rgbSpeedText, int redBackground, int greenBackground, int blueBackground, int alphaBackground, int rgbSpeedBackground, boolean textRightToLeftDirection, boolean backgroundRightToLeftDirection, double posX, double posY, long startTime, boolean stop) {
+    public Chronometer(boolean enable, ChronometerFormat format, boolean drawBackground, HUDMode rgbModeText, HUDMode rgbModeBackground, int redText, int greenText, int blueText, int alphaText, int rgbSpeedText, int redBackground, int greenBackground, int blueBackground, int alphaBackground, int rgbSpeedBackground, boolean textRightToLeftDirection, boolean backgroundRightToLeftDirection, boolean idleRender, double posX, double posY) {
+        this.enable = enable;
         this.format = format;
         this.drawBackground = drawBackground;
         this.rgbModeText = rgbModeText;
@@ -39,28 +40,48 @@ public class Chronometer {
         this.rgbSpeedBackground = rgbSpeedBackground;
         this.textRightToLeftDirection = textRightToLeftDirection;
         this.backgroundRightToLeftDirection = backgroundRightToLeftDirection;
+        this.idleRender = idleRender;
         this.posX = posX;
         this.posY = posY;
-        this.startTime = startTime;
-        this.stop = stop;
     }
 
-    public boolean isStop() {
-        return stop;
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 
-    public void setStop(boolean stop) {
-        if(!this.stop && stop) {
-            pauseTimeCache = format.formatTime(System.currentTimeMillis() - startTime);
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setStarted(boolean started) {
+        if(!this.enable) return;
+
+        this.started = started;
+        setStartTime(System.currentTimeMillis());
+    }
+
+    public boolean isStarted() {
+        return started;
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public void setPaused(boolean stop) {
+        if(!this.started || !this.enable) return;
+
+        if(!this.paused && stop) {
+            pauseTimeCache = format.formatTime(startTime);
             pauseTime = System.currentTimeMillis();
         }
 
-        if(this.stop && !stop) {
+        if(this.paused && !stop) {
             pauseTimeCache = "";
             setStartTime(startTime + (System.currentTimeMillis() - pauseTime));
             pauseTime = 0;
         }
-        this.stop = stop;
+        this.paused = stop;
     }
 
     public void setStartTime(long startTime) {
@@ -227,16 +248,27 @@ public class Chronometer {
         return pauseTimeCache;
     }
 
+    public boolean isIdleRender() {
+        return idleRender;
+    }
+
+    public void setIdleRender(boolean idleRender) {
+        this.idleRender = idleRender;
+    }
+
     public void reset() {
-        setStop(false);
-        setStartTime(0);
+        this.paused = false;
+        this.started = false;
+        this.startTime = 0;
+
         laps.clear();
     }
 
     @Override
     public String toString() {
         return "Chronometer{" +
-                "formatText='" + format + '\'' +
+                "format=" + format +
+                ", pauseTimeCache='" + pauseTimeCache + '\'' +
                 ", drawBackground=" + drawBackground +
                 ", rgbModeText=" + rgbModeText +
                 ", rgbModeBackground=" + rgbModeBackground +
@@ -254,8 +286,12 @@ public class Chronometer {
                 ", backgroundRightToLeftDirection=" + backgroundRightToLeftDirection +
                 ", posX=" + posX +
                 ", posY=" + posY +
-                ", start=" + startTime +
-                ", stop=" + stop +
+                ", startTime=" + startTime +
+                ", pauseTime=" + pauseTime +
+                ", enable=" + enable +
+                ", paused=" + paused +
+                ", started=" + started +
+                ", idleRender=" + idleRender +
                 ", laps=" + laps +
                 '}';
     }

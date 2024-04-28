@@ -8,7 +8,6 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.thomas7520.remindtimerhud.RemindTimerHUD;
 import com.thomas7520.remindtimerhud.object.Chronometer;
-import com.thomas7520.remindtimerhud.screens.clock.PositionScreen;
 import com.thomas7520.remindtimerhud.util.ButtonDropDown;
 import com.thomas7520.remindtimerhud.util.ChronometerFormat;
 import com.thomas7520.remindtimerhud.util.HUDMode;
@@ -34,10 +33,6 @@ public class ChronometerScreen extends Screen {
 
 
     private final Chronometer chronometer;
-    private int guiLeft;
-    private int guiTop;
-
-    private String chronometerFormatted;
 
     private final String[] stateValues = {"text.red", "text.green", "text.blue", "text.alpha"};
     private ForgeSlider sliderRedText, sliderGreenText, sliderBlueText, sliderAlphaText, sliderRGBText;
@@ -48,9 +43,6 @@ public class ChronometerScreen extends Screen {
 
     private Button buttonWaveDirection;
     private Button buttonWaveDirectionBackground;
-    private Button buttonBackgroundState;
-    private long test;
-    private int tickElapsed;
     private ButtonDropDown predefineFormatsButton;
 
     public ChronometerScreen(Screen lastScreen, Chronometer Chronometer) {
@@ -63,28 +55,23 @@ public class ChronometerScreen extends Screen {
 
     @Override
     protected void init() {
-        this.guiLeft = (this.width / 2);
-        this.guiTop = (this.height / 2);
-
-        chronometer.setStartTime(System.currentTimeMillis());
-
-
         List<ButtonDropDown.Entry> formatEntries = new ArrayList<>();
 
         for (ChronometerFormat value : ChronometerFormat.values()) {
             formatEntries.add(new ButtonDropDown.Entry(value.name(), pEntry -> {
                 chronometer.setFormat(ChronometerFormat.valueOf(pEntry.getName()));
-                predefineFormatsButton.setMessage(Component.literal(value.name()));
+                predefineFormatsButton.setMessage(Component.translatable("chronometer.format", value.name()));
             }));
         }
 
-        predefineFormatsButton = ButtonDropDown.builder(Component.literal(chronometer.getFormat().name()))
+        predefineFormatsButton = ButtonDropDown.builder(Component.translatable("chronometer.format", chronometer.getFormat().name()))
                 .bounds(0,0, 154, 20)
                 .addEntries(formatEntries)
                 .build();
 
+
         Button displayMode = Button.builder(Component.translatable("text.display_position"), pButton -> {
-                    minecraft.setScreen(new PositionScreen());
+                    minecraft.setScreen(new ChronometerPositionScreen());
                 }).bounds(0,0, 154, 20)
                 .build();
 
@@ -121,12 +108,16 @@ public class ChronometerScreen extends Screen {
         buttonWaveDirectionBackground.visible = chronometer.getRgbModeBackground() == HUDMode.WAVE;
 
 
-        buttonBackgroundState = Button.builder(Component.translatable(chronometer.isDrawBackground() ? "text.disable_background" : "text.enable_background"), pButton -> {
+        Button buttonBackgroundState = Button.builder(Component.translatable(chronometer.isDrawBackground() ? "text.disable_background" : "text.enable_background"), pButton -> {
                     chronometer.setDrawBackground(!chronometer.isDrawBackground());
                     pButton.setMessage(Component.translatable(chronometer.isDrawBackground() ? "text.disable_background" : "text.enable_background"));
+                }).bounds(0, 0, 154, 20)
+                .build();
 
-                    chronometer.setStop(chronometer.isDrawBackground());
-                }).bounds(0,0, 154, 20)
+        Button buttonIdleState = Button.builder(Component.translatable(chronometer.isIdleRender() ? "chronometer.idle_off" : "chronometer.idle_on"), pButton -> {
+                    chronometer.setIdleRender(!chronometer.isIdleRender());
+                    pButton.setMessage(Component.translatable(chronometer.isIdleRender() ? "chronometer.idle_off" : "chronometer.idle_on"));
+                }).bounds(0, 0, 154, 20)
                 .build();
 
 
@@ -218,9 +209,6 @@ public class ChronometerScreen extends Screen {
 
         i++;
 
-
-
-
         sliderAlphaText = new ForgeSlider(0,0, 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.literal("%")
                 , 0, 100, (100 * (chronometer.getAlphaText()-25)) / (255.0 - 25), 1, 1, true) {
 
@@ -253,9 +241,6 @@ public class ChronometerScreen extends Screen {
                 super.applyValue();
             }
         };
-
-
-        i++;
 
         sliderRGBText = new ForgeSlider(0,0, 100, 20, Component.literal(Component.translatable("text.speed").getString() + " : "), Component.literal("%")
                 , 1, 100, chronometer.getRgbSpeedText(), 1, 1, true) {
@@ -362,8 +347,6 @@ public class ChronometerScreen extends Screen {
 
         i++;
 
-
-
         sliderAlphaBackground = new ForgeSlider(0,0, 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.literal("%")
                 , 0, 100, (100 * chronometer.getAlphaBackground()) / 255.0, 1, 1, true) {
 
@@ -432,30 +415,27 @@ public class ChronometerScreen extends Screen {
         gridlayout$rowhelper.addChild(sliderRedText);
         gridlayout$rowhelper.addChild(sliderRedBackground);
 
-        gridlayout.addChild(displayMode, 1, 0);
-        gridlayout.addChild(sliderGreenText, 1, 1);
-        gridlayout.addChild(sliderGreenBackground, 1, 2);
+        gridlayout$rowhelper.addChild(displayMode);
+        gridlayout$rowhelper.addChild(sliderGreenText);
+        gridlayout$rowhelper.addChild(sliderGreenBackground);
 
-        gridlayout.addChild(rgbTextMode, 2, 0);
-        gridlayout.addChild(sliderBlueText, 2, 1);
-        gridlayout.addChild(sliderBlueBackground, 2, 2);
+        gridlayout$rowhelper.addChild(rgbTextMode);
+        gridlayout$rowhelper.addChild(sliderBlueText);
+        gridlayout$rowhelper.addChild(sliderBlueBackground);
 
+        gridlayout$rowhelper.addChild(rgbBackgroundMode);
+        gridlayout$rowhelper.addChild(sliderAlphaText);
+        gridlayout$rowhelper.addChild(sliderAlphaBackground);
 
-        gridlayout.addChild(rgbBackgroundMode,3,0);
-        gridlayout.addChild(sliderAlphaText, 3 ,1);
-        gridlayout.addChild(sliderAlphaBackground, 3,2);
+        gridlayout$rowhelper.addChild(buttonBackgroundState);
+        gridlayout$rowhelper.addChild(sliderRGBText);
+        gridlayout$rowhelper.addChild(sliderRGBBackground);
 
-
-        gridlayout.addChild(buttonBackgroundState, 4, 0);
-        gridlayout.addChild(sliderRGBText,4,1);
-        gridlayout.addChild(sliderRGBBackground,4,2);
-
-        gridlayout.addChild(buttonWaveDirection, 5, 1);
-        gridlayout.addChild(buttonWaveDirectionBackground, 5, 2);
+        gridlayout$rowhelper.addChild(buttonIdleState);
+        gridlayout.addChild(buttonWaveDirection, 5, 1, gridlayout.defaultCellSetting());
+        gridlayout.addChild(buttonWaveDirectionBackground, 5, 2, gridlayout.defaultCellSetting());
 
         gridlayout.arrangeElements();
-
-
 
         FrameLayout.alignInRectangle(gridlayout, 0, 0, this.width, this.height, 0.5F, 0.5F);
 
@@ -469,12 +449,6 @@ public class ChronometerScreen extends Screen {
     public void tick() {
         waveCounterText+=(sliderRGBText.getValue() - 1) / (100 - 1) * (10 - 1) + 1;
         waveCounterBackground+=(sliderRGBBackground.getValue() - 1) / (100 - 1) * (20 - 1) + 1;
-
-        if(tickElapsed % 20 == 0) {
-            test+=1;
-        }
-
-        tickElapsed++;
         super.tick();
     }
 
@@ -484,11 +458,8 @@ public class ChronometerScreen extends Screen {
         renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, p_282465_);
 
-        if (chronometer.isStop()) {
-            chronometerFormatted = chronometer.getPauseTimeCache();
-        } else {
-            chronometerFormatted = chronometer.getFormat().formatTime(System.currentTimeMillis() - chronometer.getStartTime());
-        }
+        String chronometerFormatted = chronometer.getFormat().formatTime(System.currentTimeMillis());
+
 
         graphics.drawCenteredString(this.font, this.title, this.width / 2, 3, 16777215);
 

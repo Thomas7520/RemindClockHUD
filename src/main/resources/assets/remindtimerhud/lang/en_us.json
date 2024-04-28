@@ -19,6 +19,11 @@
   "clock.wave": "WAVE",
   "clock.cycle": "CYCLE",
 
+  "chronometer.title": "Chronometer Settings",
+  "chronometer.format": "Format : %s",
+  "chronometer.idle_on": "Enable Idle Render",
+  "chronometer.idle_off": "Disable Idle Render",
+
   "text.display_position": "Change Display Position",
   "text.text_mode": "Text Mode : %s",
   "text.enable_background": "Enable Background",

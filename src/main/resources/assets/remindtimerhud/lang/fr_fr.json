@@ -13,16 +13,22 @@
   "clock.available_formats": "Formats disponibles :",
   "clock.formatters12": "Format 12 heures",
   "clock.formatters24": "Format 24 heures",
-  "clock.display_position": "Changer la position",
-  "clock.text_mode": "Texte Mode : %s",
-  "clock.enable_background": "Activer Fond",
-  "clock.disable_background": "Désactiver Fond",
-  "clock.background_mode": "Fond Mode : %s",
   "clock.date_format": "Format Date",
 
   "clock.static": "STATIQUE",
   "clock.wave": "VAGUE",
   "clock.cycle": "CYCLE",
+
+  "chronometer.title": "Options Chronomètre",
+  "chronometer.format": "Format : %s",
+  "chronometer.idle_on": "Activer rendu inactif",
+  "chronometer.idle_off": "Désactiver rendu inactif",
+
+  "text.display_position": "Changer la position",
+  "text.text_mode": "Texte Mode : %s",
+  "text.enable_background": "Activer Fond",
+  "text.disable_background": "Désactiver Fond",
+  "text.background_mode": "Fond Mode : %s",
 
   "text.red": "Rouge",
   "text.green": "Vert",

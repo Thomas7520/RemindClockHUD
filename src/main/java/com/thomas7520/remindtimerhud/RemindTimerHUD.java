@@ -63,7 +63,7 @@ public class RemindTimerHUD {
 
         RemindTimerConfig.Client.Clock clock = RemindTimerConfig.CLIENT.clock;
 
-        RemindTimerHUD.clock = new Clock(clock.formatText.get(), clock.drawBackground.get(), clock.use12HourFormat.get(), clock.rgbModeText.get(), clock.rgbModeBackground.get(),
+        RemindTimerHUD.clock = new Clock(clock.enable.get(), clock.formatText.get(), clock.drawBackground.get(), clock.use12HourFormat.get(), clock.rgbModeText.get(), clock.rgbModeBackground.get(),
                 clock.redText.get(), clock.greenText.get(), clock.blueText.get(), clock.alphaText.get(), clock.rgbSpeedText.get(),
                 clock.redBackground.get(), clock.greenBackground.get(), clock.blueBackground.get(), clock.alphaBackground.get(),
                 clock.rgbSpeedBackground.get(), clock.textRightToLeftDirection.get(), clock.backgroundRightToLeftDirection.get(),
@@ -71,11 +71,11 @@ public class RemindTimerHUD {
 
         RemindTimerConfig.Client.Chronometer chronometer = RemindTimerConfig.CLIENT.chronometer;
 
-        RemindTimerHUD.chronometer = new Chronometer(chronometer.format.get(), chronometer.drawBackground.get(), chronometer.rgbModeText.get(), chronometer.rgbModeBackground.get(),
+        RemindTimerHUD.chronometer = new Chronometer(chronometer.enable.get(), chronometer.format.get(), chronometer.drawBackground.get(), chronometer.rgbModeText.get(), chronometer.rgbModeBackground.get(),
                 chronometer.redText.get(), chronometer.greenText.get(), chronometer.blueText.get(), chronometer.alphaText.get(), chronometer.rgbSpeedText.get(),
                 chronometer.redBackground.get(), chronometer.greenBackground.get(), chronometer.blueBackground.get(), chronometer.alphaBackground.get(),
                 chronometer.rgbSpeedBackground.get(), chronometer.textRightToLeftDirection.get(), chronometer.backgroundRightToLeftDirection.get(),
-                chronometer.posX.get(), chronometer.posY.get(), 0, false);
+                chronometer.idleRender.get(), chronometer.posX.get(), chronometer.posY.get());
 
         //LOGGER.info(RemindTimerUtil.getGlobalAlarmsMap().size() + " alarms loaded");
         //LOGGER.info(RemindTimerUtil.getGlobalRemindsMap().size() + " reminds loaded");

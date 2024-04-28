@@ -9,6 +9,7 @@ import java.util.Locale;
 
 public class Clock {
 
+    private boolean enable;
     private String formatText;
     private boolean drawBackground;
     private boolean use12HourFormat;
@@ -18,7 +19,7 @@ public class Clock {
     private boolean textRightToLeftDirection, backgroundRightToLeftDirection;
     private double posX, posY;
 
-    public Clock(String formatText, boolean drawBackground, boolean use12HourFormat, HUDMode rgbModeText, HUDMode rgbModeBackground, int redText, int greenText, int blueText, int alphaText, int rgbSpeedText, int redBackground, int greenBackground, int blueBackground, int alphaBackground, int rgbSpeedBackground, boolean textRightToLeftDirection, boolean backgroundRightToLeftDirection, double posX, double posY) {
+    public Clock(boolean enable, String formatText, boolean drawBackground, boolean use12HourFormat, HUDMode rgbModeText, HUDMode rgbModeBackground, int redText, int greenText, int blueText, int alphaText, int rgbSpeedText, int redBackground, int greenBackground, int blueBackground, int alphaBackground, int rgbSpeedBackground, boolean textRightToLeftDirection, boolean backgroundRightToLeftDirection, double posX, double posY) {
         this.formatText = formatText;
         this.drawBackground = drawBackground;
         this.use12HourFormat = use12HourFormat;

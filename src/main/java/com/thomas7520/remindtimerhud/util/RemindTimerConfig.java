@@ -25,6 +25,7 @@ public class RemindTimerConfig {
         public Clock clock = new Clock();
         public Chronometer chronometer = new Chronometer();
         public static class Clock {
+            public ForgeConfigSpec.BooleanValue enable;
             public ForgeConfigSpec.ConfigValue<String> formatText;
             public ForgeConfigSpec.BooleanValue drawBackground;
             public ForgeConfigSpec.BooleanValue use12HourFormat;
@@ -37,12 +38,14 @@ public class RemindTimerConfig {
         }
 
         public static class Chronometer {
+            public ForgeConfigSpec.BooleanValue enable;
+
             public ForgeConfigSpec.EnumValue<ChronometerFormat> format;
             public ForgeConfigSpec.BooleanValue drawBackground;
             public ForgeConfigSpec.EnumValue<HUDMode> rgbModeText, rgbModeBackground;
             public ForgeConfigSpec.IntValue redText, greenText, blueText, alphaText, rgbSpeedText;
             public ForgeConfigSpec.IntValue redBackground, greenBackground, blueBackground, alphaBackground, rgbSpeedBackground;
-            public ForgeConfigSpec.BooleanValue textRightToLeftDirection, backgroundRightToLeftDirection;
+            public ForgeConfigSpec.BooleanValue textRightToLeftDirection, backgroundRightToLeftDirection, idleRender;
             public ForgeConfigSpec.DoubleValue posX;
             public ForgeConfigSpec.DoubleValue posY;
         }
@@ -50,6 +53,8 @@ public class RemindTimerConfig {
 
         Client(ForgeConfigSpec.Builder builder) {
             builder.comment("Clock settings").push(CLOCK_CATEGORY);
+
+            clock.enable = builder.comment("Enable chronometer").define("enable", true);
 
             clock.formatText = builder.comment("Clock format.").define("formatText", "%day %dd %smonth %yyyy %hh:%mm:%ss");
 
@@ -82,7 +87,10 @@ public class RemindTimerConfig {
 
             builder.comment("Chronometer settings").push(CHRONOMETER_CATEGORY);
 
-            chronometer.format = builder.comment("Chronometer format.").defineEnum("format", ChronometerFormat.MM_SS);
+            // TODO change to false after doing switch on/off
+            chronometer.enable = builder.comment("Enable chronometer").define("enable", true);
+
+            chronometer.format = builder.comment("Chronometer format.").defineEnum("format", ChronometerFormat.MN_MS);
 
             chronometer.drawBackground = builder.comment("Allow to draw background for text.").define("drawBackground", true);
 
@@ -103,6 +111,8 @@ public class RemindTimerConfig {
 
             chronometer.textRightToLeftDirection = builder.define("textRightToLeftDirection", false);
             chronometer.backgroundRightToLeftDirection = builder.define("backgroundRightToLeftDirection", false);
+
+            chronometer.idleRender = builder.comment("Enable chronometer render when it is idle.").define("idleRender", false);
 
             chronometer.posX = builder.comment("Value of x screen in percentage.").defineInRange("posX",0, 0, 100d);
             chronometer.posY = builder.comment("Value of y screen in percentage.").defineInRange("posY", 0,0 , 100d);

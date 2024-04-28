@@ -76,7 +76,7 @@ public class ClockScreen extends Screen {
                 .build();
 
         Button displayMode = Button.builder(Component.translatable("text.display_position"), pButton -> {
-                    minecraft.setScreen(new PositionScreen());
+                    minecraft.setScreen(new ClockPositionScreen());
                 }).bounds(0,0, 154, 20)
                 .build();
 
