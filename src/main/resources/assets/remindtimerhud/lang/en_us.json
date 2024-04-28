@@ -13,16 +13,17 @@
   "clock.available_formats": "Available formats :",
   "clock.formatters12": "12 Hours Format",
   "clock.formatters24": "24 Hours Format",
-  "clock.display_position": "Change Display Position",
-  "clock.text_mode": "Text Mode : %s",
-  "clock.enable_background": "Enable Background",
-  "clock.disable_background": "Disable Background",
-  "clock.background_mode": "Background Mode : %s",
   "clock.date_format": "Date Format",
 
   "clock.static": "STATIC",
   "clock.wave": "WAVE",
   "clock.cycle": "CYCLE",
+
+  "text.display_position": "Change Display Position",
+  "text.text_mode": "Text Mode : %s",
+  "text.enable_background": "Enable Background",
+  "text.disable_background": "Disable Background",
+  "text.background_mode": "Background Mode : %s",
 
   "text.red": "Red",
   "text.green": "Green",

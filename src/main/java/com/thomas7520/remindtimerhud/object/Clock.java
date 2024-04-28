@@ -16,9 +16,7 @@ public class Clock {
     private int redText, greenText, blueText, alphaText, rgbSpeedText;
     private int redBackground, greenBackground, blueBackground, alphaBackground, rgbSpeedBackground;
     private boolean textRightToLeftDirection, backgroundRightToLeftDirection;
-
-    private double posX;
-    private double posY;
+    private double posX, posY;
 
     public Clock(String formatText, boolean drawBackground, boolean use12HourFormat, HUDMode rgbModeText, HUDMode rgbModeBackground, int redText, int greenText, int blueText, int alphaText, int rgbSpeedText, int redBackground, int greenBackground, int blueBackground, int alphaBackground, int rgbSpeedBackground, boolean textRightToLeftDirection, boolean backgroundRightToLeftDirection, double posX, double posY) {
         this.formatText = formatText;

@@ -1,6 +1,7 @@
 package com.thomas7520.remindtimerhud;
 
 
+import com.thomas7520.remindtimerhud.object.Chronometer;
 import com.thomas7520.remindtimerhud.object.Clock;
 import com.thomas7520.remindtimerhud.util.RemindTimerConfig;
 import com.thomas7520.remindtimerhud.util.RemindTimerUtil;
@@ -11,7 +12,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLConfig;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,6 +30,7 @@ public class RemindTimerHUD {
     public static final Logger LOGGER = LogManager.getLogger();
 
     private static Clock clock;
+    private static Chronometer chronometer;
 
     public RemindTimerHUD() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -40,35 +41,41 @@ public class RemindTimerHUD {
     }
 
     private void setup(final FMLClientSetupEvent event) {
-            File directory = new File(FMLPaths.GAMEDIR.get().resolve(FMLConfig.defaultConfigPath()) + "/global");
+        File directory = new File(FMLPaths.CONFIGDIR.get().resolve(MODID) + "/global");
 
-            if (directory.mkdirs() || directory.listFiles() == null) return;
+        if (directory.mkdirs() || directory.listFiles() == null) return;
 
-            File directoryAlarms = new File(directory.getAbsolutePath() + "/alarms");
-            File directoryReminds = new File(directory.getAbsolutePath() + "/reminds");
+        File directoryAlarms = new File(directory.getAbsolutePath() + "/alarms");
+        File directoryReminds = new File(directory.getAbsolutePath() + "/reminds");
 
 
-            if(!directoryAlarms.mkdirs()) {
-                for (File alarmFile : Objects.requireNonNull(directoryAlarms.listFiles())) {
+        if(!directoryAlarms.mkdirs()) {
+            for (File alarmFile : Objects.requireNonNull(directoryAlarms.listFiles())) {
 
-                }
             }
+        }
 
-            if(!directoryReminds.mkdirs()) {
-                for (File alarmFile : Objects.requireNonNull(directoryAlarms.listFiles())) {
+        if(!directoryReminds.mkdirs()) {
+            for (File alarmFile : Objects.requireNonNull(directoryAlarms.listFiles())) {
 
-                }
             }
+        }
 
-        System.out.println(RemindTimerConfig.CLIENT.alphaBackground.get());
+        RemindTimerConfig.Client.Clock clock = RemindTimerConfig.CLIENT.clock;
 
-        RemindTimerConfig.Client config = RemindTimerConfig.CLIENT;
+        RemindTimerHUD.clock = new Clock(clock.formatText.get(), clock.drawBackground.get(), clock.use12HourFormat.get(), clock.rgbModeText.get(), clock.rgbModeBackground.get(),
+                clock.redText.get(), clock.greenText.get(), clock.blueText.get(), clock.alphaText.get(), clock.rgbSpeedText.get(),
+                clock.redBackground.get(), clock.greenBackground.get(), clock.blueBackground.get(), clock.alphaBackground.get(),
+                clock.rgbSpeedBackground.get(), clock.textRightToLeftDirection.get(), clock.backgroundRightToLeftDirection.get(),
+                clock.posX.get(), clock.posY.get());
 
-        RemindTimerHUD.clock = new Clock(config.formatText.get(), config.drawBackground.get(), config.use12HourFormat.get(), config.rgbModeText.get(), config.rgbModeBackground.get(),
-                config.redText.get(), config.greenText.get(), config.blueText.get(), config.alphaText.get(), config.rgbSpeedText.get(),
-                config.redBackground.get(), config.greenBackground.get(), config.blueBackground.get(), config.alphaBackground.get(),
-                config.rgbSpeedBackground.get(), config.textRightToLeftDirection.get(), config.backgroundRightToLeftDirection.get(),
-                config.posX.get(), config.posY.get());
+        RemindTimerConfig.Client.Chronometer chronometer = RemindTimerConfig.CLIENT.chronometer;
+
+        RemindTimerHUD.chronometer = new Chronometer(chronometer.format.get(), chronometer.drawBackground.get(), chronometer.rgbModeText.get(), chronometer.rgbModeBackground.get(),
+                chronometer.redText.get(), chronometer.greenText.get(), chronometer.blueText.get(), chronometer.alphaText.get(), chronometer.rgbSpeedText.get(),
+                chronometer.redBackground.get(), chronometer.greenBackground.get(), chronometer.blueBackground.get(), chronometer.alphaBackground.get(),
+                chronometer.rgbSpeedBackground.get(), chronometer.textRightToLeftDirection.get(), chronometer.backgroundRightToLeftDirection.get(),
+                chronometer.posX.get(), chronometer.posY.get(), 0, false);
 
         //LOGGER.info(RemindTimerUtil.getGlobalAlarmsMap().size() + " alarms loaded");
         //LOGGER.info(RemindTimerUtil.getGlobalRemindsMap().size() + " reminds loaded");
@@ -92,5 +99,9 @@ public class RemindTimerHUD {
 
     public static Clock getClock() {
         return clock;
+    }
+    
+    public static Chronometer getChronometer() {
+        return chronometer;
     }
 }

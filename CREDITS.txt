@@ -23,7 +23,7 @@ both possible, and as stable as can be.
   On that note, here is some specific information of the MCP data we use:
     * Minecraft Coder Pack (MCP) *
       Forge Mod Loader and Minecraft Forge have permission to distribute and automatically 
-      download components of MCP and distribute MCP data files. This permission is not 
+      download entries of MCP and distribute MCP data files. This permission is not
       transitive and others wishing to redistribute the Minecraft Forge source independently
       should seek permission of MCP or remove the MCP data files and request their users 
       to download MCP separately.
@@ -60,6 +60,6 @@ resolution. http://maven.apache.org/
 It also contains a partial repackaging of the javaxdelta library from http://sourceforge.net/projects/javaxdelta/
 with credit to it's authors.
 
-Forge Mod Loader downloads components from the Minecraft Coder Pack
+Forge Mod Loader downloads entries from the Minecraft Coder Pack
 (http://mcp.ocean-labs.de/index.php/Main_Page) with kind permission from the MCP team.
 

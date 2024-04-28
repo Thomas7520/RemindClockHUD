@@ -27,14 +27,10 @@ public class RemindTimerUtil {
     public static KeyMapping resetChronometerBind;
     public static KeyMapping stopAlarm;
 
-    private static final Chronometer chronometer = new Chronometer(0, true);
     private static final List<Remind> reminds = new ArrayList<>();
     private static final HashMap<UUID, Alarm> alarms = new HashMap<>();
     private static final HashMap<UUID, Alarm> serverAlarms = new HashMap<>();
 
-    public static Chronometer getChronometer() {
-        return chronometer;
-    }
 
     public static List<Remind> getReminds() {
         return reminds;

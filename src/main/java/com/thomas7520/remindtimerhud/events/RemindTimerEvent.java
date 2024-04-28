@@ -211,6 +211,8 @@ public class RemindTimerEvent {
         event.getGuiGraphics().pose().popPose();
 
         RenderSystem.disableBlend();
+        // TODO Sync waveCounterText & waveCounterBackground on every gui, and create function renderChronometer & renderClock, ...
+        // TODO RENDER CHRONOMETER HERE, AND DON'T FORGET TO CHECK THE X MAX, MIN, ETC... BECAUSE OF NUMBER AND LAPS, IT CAN BE OUT OF RANGE IT WE DON'T CHECK
     }
 
     private static void drawGradientRect(double left, double top, double right, double bottom, int z, int coltl, int coltr, int colbl,

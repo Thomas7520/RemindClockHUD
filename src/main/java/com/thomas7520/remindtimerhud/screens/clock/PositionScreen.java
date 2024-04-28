@@ -32,9 +32,7 @@ public class PositionScreen extends Screen {
 
     public PositionScreen() {
         super(Component.empty());
-
         clock = RemindTimerHUD.getClock();
-
     }
 
 
@@ -60,9 +58,9 @@ public class PositionScreen extends Screen {
     public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
         if(clicked) {
             clicked = false;
-            RemindTimerConfig.Client config = RemindTimerConfig.CLIENT;
-            config.posX.set(clock.getPosX());
-            config.posY.set(clock.getPosY());
+            RemindTimerConfig.Client.Clock configClock = RemindTimerConfig.CLIENT.clock;
+            configClock.posX.set(clock.getPosX());
+            configClock.posY.set(clock.getPosY());
         }
 
         return super.mouseReleased(pMouseX, pMouseY, pButton);
@@ -99,8 +97,6 @@ public class PositionScreen extends Screen {
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
 
-        // WORKING FOR EVERY SIZE, LETS GO !!
-
         x = (float) (clock.getPosX() / 100.0 * minecraft.getWindow().getGuiScaledWidth());
         y = (float) (clock.getPosY() / 100.0 * minecraft.getWindow().getGuiScaledHeight());
 
@@ -130,7 +126,6 @@ public class PositionScreen extends Screen {
                     if (clock.isBackgroundRightToLeftDirection()) {
                         hueStart = (i + waveCounterBackground) / 360f; // Inversion de la couleur
                         hueEnd = (i + 4 + waveCounterBackground) / 360f; // Inversion de la couleur
-
                     }
 
                     int colorStart = Color.HSBtoRGB(hueStart, 1.0F, 1.0F);

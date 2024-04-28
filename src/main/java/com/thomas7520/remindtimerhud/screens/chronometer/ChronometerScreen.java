@@ -1,4 +1,4 @@
-package com.thomas7520.remindtimerhud.screens.clock;
+package com.thomas7520.remindtimerhud.screens.chronometer;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -7,15 +7,15 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.thomas7520.remindtimerhud.RemindTimerHUD;
-import com.thomas7520.remindtimerhud.object.Clock;
-import com.thomas7520.remindtimerhud.screens.buttons.InformationButton;
+import com.thomas7520.remindtimerhud.object.Chronometer;
+import com.thomas7520.remindtimerhud.screens.clock.PositionScreen;
+import com.thomas7520.remindtimerhud.util.ButtonDropDown;
+import com.thomas7520.remindtimerhud.util.ChronometerFormat;
 import com.thomas7520.remindtimerhud.util.HUDMode;
 import com.thomas7520.remindtimerhud.util.RemindTimerConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
@@ -29,50 +29,58 @@ import net.minecraftforge.client.gui.widget.ForgeSlider;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
-public class ClockScreen extends Screen {
+public class ChronometerScreen extends Screen {
 
 
-    private final Clock clock;
-    private EditBox dateBox;
-    private String dateFormatted;
+    private final Chronometer chronometer;
+    private int guiLeft;
+    private int guiTop;
+
+    private String chronometerFormatted;
+
     private final String[] stateValues = {"text.red", "text.green", "text.blue", "text.alpha"};
     private ForgeSlider sliderRedText, sliderGreenText, sliderBlueText, sliderAlphaText, sliderRGBText;
     private ForgeSlider sliderRedBackground, sliderGreenBackground, sliderBlueBackground, sliderAlphaBackground, sliderRGBBackground;
     private final Screen lastScreen;
-    private Button formatHourButton;
     private double waveCounterText;
     private double waveCounterBackground;
+
     private Button buttonWaveDirection;
     private Button buttonWaveDirectionBackground;
+    private Button buttonBackgroundState;
+    private long test;
+    private int tickElapsed;
+    private ButtonDropDown predefineFormatsButton;
 
-    public ClockScreen(Screen lastScreen, Clock clock) {
-        super(Component.translatable("clock.title"));
+    public ChronometerScreen(Screen lastScreen, Chronometer Chronometer) {
+        super(Component.translatable("chronometer.title"));
         this.lastScreen = lastScreen;
-        this.clock = clock;
+        this.chronometer = Chronometer;
     }
+
 
 
     @Override
     protected void init() {
+        this.guiLeft = (this.width / 2);
+        this.guiTop = (this.height / 2);
 
-        dateBox = new EditBox(font, 0,0, 151, 20, Component.nullToEmpty(null)){
+        chronometer.setStartTime(System.currentTimeMillis());
 
-        };
-        dateBox.setCanLoseFocus(true);
-        dateBox.setMaxLength(100);
-        dateBox.setTooltip(Tooltip.create(Component.translatable("clock.date_format")));
-        dateBox.setValue(clock.getFormatText());
-        dateBox.setResponder(newDate -> {
-            clock.setFormatText(newDate);
-            RemindTimerConfig.CLIENT.clock.formatText.set(newDate);
-        });
 
-        formatHourButton = Button.builder(Component.translatable(clock.isUse12HourFormat() ? "clock.formatters12" : "clock.formatters24"), pButton -> {
-                    clock.setUse12HourFormat(!clock.isUse12HourFormat());
-                    pButton.setMessage(Component.translatable(clock.isUse12HourFormat() ? "clock.formatters12" : "clock.formatters24"));
-        }).bounds(0,0, 154, 20)
+        List<ButtonDropDown.Entry> formatEntries = new ArrayList<>();
+
+        for (ChronometerFormat value : ChronometerFormat.values()) {
+            formatEntries.add(new ButtonDropDown.Entry(value.name(), pEntry -> {
+                chronometer.setFormat(ChronometerFormat.valueOf(pEntry.getName()));
+                predefineFormatsButton.setMessage(Component.literal(value.name()));
+            }));
+        }
+
+        predefineFormatsButton = ButtonDropDown.builder(Component.literal(chronometer.getFormat().name()))
+                .bounds(0,0, 154, 20)
+                .addEntries(formatEntries)
                 .build();
 
         Button displayMode = Button.builder(Component.translatable("text.display_position"), pButton -> {
@@ -80,74 +88,51 @@ public class ClockScreen extends Screen {
                 }).bounds(0,0, 154, 20)
                 .build();
 
-        Button rgbTextMode = Button.builder(Component.translatable("text.text_mode", clock.getRgbModeText().name()), pButton -> {
-                    clock.setRgbModeText(getNextMode(clock.getRgbModeText()));
-                    sliderRGBText.visible = clock.getRgbModeText() == HUDMode.WAVE || clock.getRgbModeText() == HUDMode.CYCLE;
-                    buttonWaveDirection.visible = clock.getRgbModeText() == HUDMode.WAVE;
-                    pButton.setMessage(Component.translatable("text.text_mode", clock.getRgbModeText().name()));
+        Button rgbTextMode = Button.builder(Component.translatable("text.text_mode", chronometer.getRgbModeText().name()), pButton -> {
+                    chronometer.setRgbModeText(getNextMode(chronometer.getRgbModeText()));
+                    sliderRGBText.visible = chronometer.getRgbModeText() == HUDMode.WAVE || chronometer.getRgbModeText() == HUDMode.CYCLE;
+                    buttonWaveDirection.visible = chronometer.getRgbModeText() == HUDMode.WAVE;
+                    pButton.setMessage(Component.translatable("text.text_mode", chronometer.getRgbModeText().name()));
                 }).bounds(0,0, 154, 20)
                 .build();
 
-        Button rgbBackgroundMode = Button.builder(Component.translatable("text.background_mode", clock.getRgbModeBackground().name()), pButton -> {
-                    clock.setRgbModeBackground(getNextMode(clock.getRgbModeBackground()));
-                    sliderRGBBackground.visible = clock.getRgbModeBackground() == HUDMode.WAVE || clock.getRgbModeBackground() == HUDMode.CYCLE;
-                    buttonWaveDirectionBackground.visible = clock.getRgbModeBackground() == HUDMode.WAVE;
-                    pButton.setMessage(Component.translatable("text.background_mode", clock.getRgbModeBackground().name()));
+        Button rgbBackgroundMode = Button.builder(Component.translatable("text.background_mode", chronometer.getRgbModeBackground().name()), pButton -> {
+                    chronometer.setRgbModeBackground(getNextMode(chronometer.getRgbModeBackground()));
+                    sliderRGBBackground.visible = chronometer.getRgbModeBackground() == HUDMode.WAVE || chronometer.getRgbModeBackground() == HUDMode.CYCLE;
+                    buttonWaveDirectionBackground.visible = chronometer.getRgbModeBackground() == HUDMode.WAVE;
+                    pButton.setMessage(Component.translatable("text.background_mode", chronometer.getRgbModeBackground().name()));
                 }).bounds(0,0, 154, 20)
                 .build();
 
-        buttonWaveDirection = Button.builder(Component.translatable(clock.isTextRightToLeftDirection() ? "text.direction_lr" : "text.direction_rl"), pButton -> {
-                    clock.setTextRightToLeftDirection(!clock.isTextRightToLeftDirection());
-                    pButton.setMessage(Component.translatable(clock.isTextRightToLeftDirection() ? "text.direction_lr" : "text.direction_rl"));
+        buttonWaveDirection = Button.builder(Component.translatable(chronometer.isTextRightToLeftDirection() ? "text.direction_lr" : "text.direction_rl"), pButton -> {
+                    chronometer.setTextRightToLeftDirection(!chronometer.isTextRightToLeftDirection());
+                    pButton.setMessage(Component.translatable(chronometer.isTextRightToLeftDirection() ? "text.direction_lr" : "text.direction_rl"));
+        }).bounds(0,0, 100, 20)
+                .build();
+
+        buttonWaveDirection.visible = chronometer.getRgbModeText() == HUDMode.WAVE;
+
+        buttonWaveDirectionBackground = Button.builder(Component.translatable(chronometer.isTextRightToLeftDirection() ? "text.direction_lr" : "text.direction_rl"), pButton -> {
+                    chronometer.setBackgroundRightToLeftDirection(!chronometer.isBackgroundRightToLeftDirection());
+                    pButton.setMessage(Component.translatable(chronometer.isBackgroundRightToLeftDirection() ? "text.direction_lr" : "text.direction_rl"));
                 }).bounds(0,0, 100, 20)
                 .build();
 
-        buttonWaveDirection.visible = clock.getRgbModeText() == HUDMode.WAVE;
+        buttonWaveDirectionBackground.visible = chronometer.getRgbModeBackground() == HUDMode.WAVE;
 
-        buttonWaveDirectionBackground = Button.builder(Component.translatable(clock.isTextRightToLeftDirection() ? "text.direction_lr" : "text.direction_rl"), pButton -> {
-                    clock.setBackgroundRightToLeftDirection(!clock.isBackgroundRightToLeftDirection());
-                    pButton.setMessage(Component.translatable(clock.isBackgroundRightToLeftDirection() ? "text.direction_lr" : "text.direction_rl"));
-                }).bounds(0,0, 100, 20)
+
+        buttonBackgroundState = Button.builder(Component.translatable(chronometer.isDrawBackground() ? "text.disable_background" : "text.enable_background"), pButton -> {
+                    chronometer.setDrawBackground(!chronometer.isDrawBackground());
+                    pButton.setMessage(Component.translatable(chronometer.isDrawBackground() ? "text.disable_background" : "text.enable_background"));
+
+                    chronometer.setStop(chronometer.isDrawBackground());
+                }).bounds(0,0, 154, 20)
                 .build();
-
-        buttonWaveDirectionBackground.visible = clock.getRgbModeBackground() == HUDMode.WAVE;
-
-
-        Button buttonBackgroundState = Button.builder(Component.translatable(clock.isDrawBackground() ? "text.disable_background" : "text.enable_background"), pButton -> {
-                    clock.setDrawBackground(!clock.isDrawBackground());
-                    pButton.setMessage(Component.translatable(clock.isDrawBackground() ? "text.disable_background" : "text.enable_background"));
-                }).bounds(0, 0, 154, 20)
-                .build();
-
-
-
-        List<String> tooltipLines = new ArrayList<>();
-
-        tooltipLines.add(Component.translatable("clock.available_formats").getString());
-
-        tooltipLines.add("%hh");
-        tooltipLines.add("%mm");
-        tooltipLines.add("%ss");
-        tooltipLines.add("%dd");
-        tooltipLines.add("%day");
-        tooltipLines.add("%sday");
-        tooltipLines.add("%month");
-        tooltipLines.add("%smonth");
-        tooltipLines.add("%MM");
-        tooltipLines.add("%yyyy");
-        tooltipLines.add("%yy");
-
-        StringBuilder tooltip = new StringBuilder();
-
-        for (String s : tooltipLines) {
-            tooltip.append(s).append("\n");
-        }
-
 
 
         int i = 1;
         sliderRedText = new ForgeSlider(0,0, 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.empty()
-                , 0, 255, clock.getRedText(), 1, 1, true) {
+                , 0, 255, chronometer.getRedText(), 1, 1, true) {
 
 
             @Override
@@ -168,7 +153,7 @@ public class ClockScreen extends Screen {
 
             @Override
             protected void applyValue() {
-                clock.setRedText(getValueInt());
+                chronometer.setRedText(getValueInt());
                 super.applyValue();
             }
 
@@ -177,7 +162,7 @@ public class ClockScreen extends Screen {
         i++;
 
         sliderGreenText = new ForgeSlider(0,0, 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.empty()
-                , 0, 255, clock.getGreenText(), 1, 1, true) {
+                , 0, 255, chronometer.getGreenText(), 1, 1, true) {
 
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -197,7 +182,7 @@ public class ClockScreen extends Screen {
 
             @Override
             protected void applyValue() {
-                clock.setGreenText(getValueInt());
+                chronometer.setGreenText(getValueInt());
                 super.applyValue();
             }
         };
@@ -205,7 +190,7 @@ public class ClockScreen extends Screen {
         i++;
 
         sliderBlueText = new ForgeSlider(0,0, 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.empty()
-                , 0, 255, clock.getBlueText(), 1, 1, true) {
+                , 0, 255, chronometer.getBlueText(), 1, 1, true) {
 
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -226,7 +211,7 @@ public class ClockScreen extends Screen {
 
             @Override
             protected void applyValue() {
-                clock.setBlueText(getValueInt());
+                chronometer.setBlueText(getValueInt());
                 super.applyValue();
             }
         };
@@ -237,7 +222,7 @@ public class ClockScreen extends Screen {
 
 
         sliderAlphaText = new ForgeSlider(0,0, 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.literal("%")
-                , 0, 100, (100 * (clock.getAlphaText()-25)) / (255.0 - 25), 1, 1, true) {
+                , 0, 100, (100 * (chronometer.getAlphaText()-25)) / (255.0 - 25), 1, 1, true) {
 
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -264,7 +249,7 @@ public class ClockScreen extends Screen {
 
             @Override
             protected void applyValue() {
-                clock.setAlphaText(getValueInt());
+                chronometer.setAlphaText(getValueInt());
                 super.applyValue();
             }
         };
@@ -273,7 +258,7 @@ public class ClockScreen extends Screen {
         i++;
 
         sliderRGBText = new ForgeSlider(0,0, 100, 20, Component.literal(Component.translatable("text.speed").getString() + " : "), Component.literal("%")
-                , 1, 100, clock.getRgbSpeedText(), 1, 1, true) {
+                , 1, 100, chronometer.getRgbSpeedText(), 1, 1, true) {
 
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -283,16 +268,16 @@ public class ClockScreen extends Screen {
 
             @Override
             protected void applyValue() {
-                clock.setRgbSpeedText(getValueInt());
+                chronometer.setRgbSpeedText(getValueInt());
                 super.applyValue();
             }
         };
 
-        sliderRGBText.visible = clock.getRgbModeText() == HUDMode.WAVE || clock.getRgbModeText() == HUDMode.CYCLE;
+        sliderRGBText.visible = chronometer.getRgbModeText() == HUDMode.WAVE || chronometer.getRgbModeText() == HUDMode.CYCLE;
 
         i = 1;
         sliderRedBackground = new ForgeSlider(0,0, 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.empty()
-                , 0, 255, clock.getRedBackground(), 1, 1, true) {
+                , 0, 255, chronometer.getRedBackground(), 1, 1, true) {
 
 
             @Override
@@ -313,7 +298,7 @@ public class ClockScreen extends Screen {
 
             @Override
             protected void applyValue() {
-                clock.setRedBackground(getValueInt());
+                chronometer.setRedBackground(getValueInt());
                 super.applyValue();
             }
         };
@@ -321,7 +306,7 @@ public class ClockScreen extends Screen {
         i++;
 
         sliderGreenBackground = new ForgeSlider(0,0, 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.empty()
-                , 0, 255, clock.getGreenBackground(), 1, 1, true) {
+                , 0, 255, chronometer.getGreenBackground(), 1, 1, true) {
 
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -341,7 +326,7 @@ public class ClockScreen extends Screen {
 
             @Override
             protected void applyValue() {
-                clock.setGreenBackground(getValueInt());
+                chronometer.setGreenBackground(getValueInt());
                 super.applyValue();
             }
         };
@@ -349,7 +334,7 @@ public class ClockScreen extends Screen {
         i++;
 
         sliderBlueBackground = new ForgeSlider(0,0, 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.empty()
-                , 0, 255, clock.getBlueBackground(), 1, 1, true) {
+                , 0, 255, chronometer.getBlueBackground(), 1, 1, true) {
 
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -370,7 +355,7 @@ public class ClockScreen extends Screen {
 
             @Override
             protected void applyValue() {
-                clock.setBlueBackground(getValueInt());
+                chronometer.setBlueBackground(getValueInt());
                 super.applyValue();
             }
         };
@@ -380,7 +365,7 @@ public class ClockScreen extends Screen {
 
 
         sliderAlphaBackground = new ForgeSlider(0,0, 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.literal("%")
-                , 0, 100, (100 * clock.getAlphaBackground()) / 255.0, 1, 1, true) {
+                , 0, 100, (100 * chronometer.getAlphaBackground()) / 255.0, 1, 1, true) {
 
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -407,13 +392,13 @@ public class ClockScreen extends Screen {
 
             @Override
             protected void applyValue() {
-                clock.setAlphaBackground(getValueInt());
+                chronometer.setAlphaBackground(getValueInt());
                 super.applyValue();
             }
         };
 
         sliderRGBBackground = new ForgeSlider(0,0, 100, 20, Component.literal(Component.translatable("text.speed").getString() + " : "), Component.literal("%")
-                , 1, 100, clock.getRgbSpeedBackground(), 1, 1, true) {
+                , 1, 100, chronometer.getRgbSpeedBackground(), 1, 1, true) {
 
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -424,12 +409,12 @@ public class ClockScreen extends Screen {
 
             @Override
             protected void applyValue() {
-                clock.setRgbSpeedBackground(getValueInt());
+                chronometer.setRgbSpeedBackground(getValueInt());
                 super.applyValue();
             }
         };
 
-        sliderRGBBackground.visible = clock.getRgbModeBackground() == HUDMode.WAVE || clock.getRgbModeBackground() == HUDMode.CYCLE;
+        sliderRGBBackground.visible = chronometer.getRgbModeBackground() == HUDMode.WAVE || chronometer.getRgbModeBackground() == HUDMode.CYCLE;
 
 
         this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (p_280842_) -> {
@@ -443,46 +428,36 @@ public class ClockScreen extends Screen {
 
         GridLayout.RowHelper gridlayout$rowhelper = gridlayout.createRowHelper(3);
 
-        gridlayout$rowhelper.addChild(dateBox);
+        gridlayout$rowhelper.addChild(predefineFormatsButton);
         gridlayout$rowhelper.addChild(sliderRedText);
         gridlayout$rowhelper.addChild(sliderRedBackground);
 
-        gridlayout$rowhelper.addChild(formatHourButton);
-        gridlayout$rowhelper.addChild(sliderGreenText);
-        gridlayout$rowhelper.addChild(sliderGreenBackground);
+        gridlayout.addChild(displayMode, 1, 0);
+        gridlayout.addChild(sliderGreenText, 1, 1);
+        gridlayout.addChild(sliderGreenBackground, 1, 2);
 
-        gridlayout$rowhelper.addChild(displayMode);
-        gridlayout$rowhelper.addChild(sliderBlueText);
-        gridlayout$rowhelper.addChild(sliderBlueBackground);
-        gridlayout$rowhelper.addChild(rgbTextMode);
+        gridlayout.addChild(rgbTextMode, 2, 0);
+        gridlayout.addChild(sliderBlueText, 2, 1);
+        gridlayout.addChild(sliderBlueBackground, 2, 2);
 
 
-        gridlayout$rowhelper.addChild(sliderAlphaText);
-        gridlayout$rowhelper.addChild(sliderAlphaBackground);
+        gridlayout.addChild(rgbBackgroundMode,3,0);
+        gridlayout.addChild(sliderAlphaText, 3 ,1);
+        gridlayout.addChild(sliderAlphaBackground, 3,2);
 
-        gridlayout$rowhelper.addChild(rgbBackgroundMode);
 
-        gridlayout$rowhelper.addChild(sliderRGBText);
-        gridlayout$rowhelper.addChild(sliderRGBBackground);
+        gridlayout.addChild(buttonBackgroundState, 4, 0);
+        gridlayout.addChild(sliderRGBText,4,1);
+        gridlayout.addChild(sliderRGBBackground,4,2);
 
-        gridlayout.addChild(buttonBackgroundState, 5, 0, gridlayout.defaultCellSetting());
-        gridlayout.addChild(buttonWaveDirection, 5, 1, gridlayout.defaultCellSetting());
-        gridlayout.addChild(buttonWaveDirectionBackground, 5, 2, gridlayout.defaultCellSetting());
+        gridlayout.addChild(buttonWaveDirection, 5, 1);
+        gridlayout.addChild(buttonWaveDirectionBackground, 5, 2);
 
         gridlayout.arrangeElements();
 
 
 
         FrameLayout.alignInRectangle(gridlayout, 0, 0, this.width, this.height, 0.5F, 0.5F);
-
-        InformationButton informationButton = new InformationButton(dateBox.getX() - 25, dateBox.getY(), 20,20, Component.translatable(""), p_93751_ -> {
-
-        }, Supplier::get);
-
-        dateBox.setX(dateBox.getX()+1);
-
-        informationButton.setTooltip(Tooltip.create(Component.literal(tooltip.toString())));
-        addRenderableWidget(informationButton);
 
         gridlayout.visitWidgets(this::addRenderableWidget);
         super.init();
@@ -492,9 +467,14 @@ public class ClockScreen extends Screen {
 
     @Override
     public void tick() {
-        dateBox.tick();
         waveCounterText+=(sliderRGBText.getValue() - 1) / (100 - 1) * (10 - 1) + 1;
         waveCounterBackground+=(sliderRGBBackground.getValue() - 1) / (100 - 1) * (20 - 1) + 1;
+
+        if(tickElapsed % 20 == 0) {
+            test+=1;
+        }
+
+        tickElapsed++;
         super.tick();
     }
 
@@ -504,9 +484,11 @@ public class ClockScreen extends Screen {
         renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, p_282465_);
 
-        dateFormatted = clock.getDateFormatted();
-
-        dateBox.render(graphics, mouseX, mouseY, p_282465_);
+        if (chronometer.isStop()) {
+            chronometerFormatted = chronometer.getPauseTimeCache();
+        } else {
+            chronometerFormatted = chronometer.getFormat().formatTime(System.currentTimeMillis() - chronometer.getStartTime());
+        }
 
         graphics.drawCenteredString(this.font, this.title, this.width / 2, 3, 16777215);
 
@@ -515,23 +497,23 @@ public class ClockScreen extends Screen {
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
 
-        int x = width / 2 - font.width(dateFormatted) / 2;
-        int y = dateBox.getY() - 20;
+        int x = width / 2 - font.width(chronometerFormatted) / 2;
+        int y = predefineFormatsButton.getY() - 20;
 
-        double rectX = width / 2f - font.width(dateFormatted) / 2f - 2;
+        double rectX = width / 2f - font.width(chronometerFormatted) / 2f - 2;
         double rectY = y - 2;
-        double rectWidth = font.width(dateFormatted) + 3;
+        double rectWidth = font.width(chronometerFormatted) + 3;
         double rectHeight = 12;
 
 
-        if(clock.isDrawBackground()) {
-            if (clock.getRgbModeBackground() == HUDMode.WAVE) {
+        if(chronometer.isDrawBackground()) {
+            if (chronometer.getRgbModeBackground() == HUDMode.WAVE) {
                 for (int i = 0; i < rectWidth; i++) {
                     double hueStart = 1.0F - ((i - waveCounterBackground) / 360f); // Inversion de la couleur
 
                     double hueEnd = 1.0F - ((i + 1 - waveCounterBackground) / 360f); // Inversion de la couleur
 
-                    if (clock.isBackgroundRightToLeftDirection()) {
+                    if (chronometer.isBackgroundRightToLeftDirection()) {
                         hueStart = (i + waveCounterBackground) / 360f; // Inversion de la couleur
                         hueEnd = (i + 4 + waveCounterBackground) / 360f; // Inversion de la couleur
 
@@ -547,11 +529,11 @@ public class ClockScreen extends Screen {
                     // Dessiner une colonne du rectangle avec le dégradé de couleur
                     drawGradientRect((rectX + i), rectY, rectX + i + 1, rectY + rectHeight, 0, colorStart, colorEnd, colorStart, colorEnd);
                 }
-            } else if (clock.getRgbModeBackground() == HUDMode.CYCLE) {
+            } else if (chronometer.getRgbModeBackground() == HUDMode.CYCLE) {
 
                 float hueStart = 1.0F - ((float) (waveCounterBackground) / 360f); // Inversion de la couleur
 
-                if (clock.isBackgroundRightToLeftDirection()) {
+                if (chronometer.isBackgroundRightToLeftDirection()) {
                     hueStart = (float) (waveCounterBackground) / 360f; // Inversion de la couleur
                 }
 
@@ -568,20 +550,19 @@ public class ClockScreen extends Screen {
                 drawGradientRect(rectX, rectY, rectX + rectWidth, rectY + rectHeight, 0, colorStart, colorStart, colorEnd, colorEnd);
             } else {
                 int colorBackground = (sliderAlphaBackground.getValueInt() << 24 | sliderRedBackground.getValueInt() << 16 | sliderGreenBackground.getValueInt() << 8 | sliderBlueBackground.getValueInt());
-                graphics.fill(width / 2 - font.width(dateFormatted) / 2 - 2, y - 2, width / 2 + font.width(dateFormatted) / 2 + 2, y + 8 + 2, colorBackground);
+                graphics.fill(width / 2 - font.width(chronometerFormatted) / 2 - 2, y - 2, width / 2 + font.width(chronometerFormatted) / 2 + 2, y + 8 + 2, colorBackground);
             }
-
         }
 
 
-        if(clock.getRgbModeText() == HUDMode.WAVE) {
-            for (int i = 0; i < dateFormatted.length(); i++) {
-                char c = dateFormatted.charAt(i);
+        if(chronometer.getRgbModeText() == HUDMode.WAVE) {
+            for (int i = 0; i < chronometerFormatted.length(); i++) {
+                char c = chronometerFormatted.charAt(i);
 
-                double hue = 1.0F - ((float) (dateFormatted.length() - i + waveCounterText) * 2 / 360f); // Inversion de la couleur
+                double hue = 1.0F - ((float) (chronometerFormatted.length() - i + waveCounterText) * 2 / 360f); // Inversion de la couleur
 
-                if (clock.isTextRightToLeftDirection())
-                    hue = (dateFormatted.length() + i + waveCounterText) * 2 / 360; // Inversion de la couleur
+                if (chronometer.isTextRightToLeftDirection())
+                    hue = (chronometerFormatted.length() + i + waveCounterText) * 2 / 360; // Inversion de la couleur
 
                 float saturation = 1.0F;
                 float brightness = 1.0F;
@@ -594,11 +575,11 @@ public class ClockScreen extends Screen {
                 x += minecraft.font.width(String.valueOf(c));
 
             }
-        } else if (clock.getRgbModeText() == HUDMode.CYCLE) {
+        } else if (chronometer.getRgbModeText() == HUDMode.CYCLE) {
 
-        float hueStart = 1.0F - ((float) (waveCounterText) / 255); // Inversion de la couleur
+            float hueStart = 1.0F - ((float) (waveCounterText) / 255); // Inversion de la couleur
 
-            if (clock.isTextRightToLeftDirection()) {
+            if (chronometer.isTextRightToLeftDirection()) {
                 hueStart = (float) (waveCounterText) / 255; // Inversion de la couleur
             }
 
@@ -607,23 +588,25 @@ public class ClockScreen extends Screen {
 
             color = (color & 0x00FFFFFF) | (sliderAlphaText.getValueInt() << 24);
 
-            graphics.drawString(font, dateFormatted, x, y, color, false);
+            graphics.drawString(font, chronometerFormatted, x, y, color, false);
 
         } else {
             int colorText = (sliderAlphaText.getValueInt() << 24 | sliderRedText.getValueInt() << 16 | sliderGreenText.getValueInt() << 8 | sliderBlueText.getValueInt());
 
-            graphics.drawString(font, dateFormatted, x, y, colorText, false);
+            graphics.drawString(font, chronometerFormatted, x, y, colorText, false);
         }
+
+        RenderSystem.disableBlend();
+
     }
 
-    @Override
-    public boolean mouseClicked(double p_94695_, double p_94696_, int p_94697_) {
-        if(!dateBox.isMouseOver(p_94695_, p_94696_) && dateBox.isFocused()) {
-            dateBox.setFocused(false);
-        }
-        return super.mouseClicked(p_94695_, p_94696_, p_94697_);
-    }
 
+    private ChronometerFormat getNextFormat(ChronometerFormat currentFormat) {
+        ChronometerFormat[] values = ChronometerFormat.values();
+        int currentIndex = currentFormat.ordinal();
+        int nextIndex = (currentIndex + 1) % values.length;
+        return values[nextIndex];
+    }
     private HUDMode getNextMode(HUDMode currentOption) {
         HUDMode[] values = HUDMode.values();
         int currentIndex = currentOption.ordinal();
@@ -638,29 +621,28 @@ public class ClockScreen extends Screen {
     }
 
     private void saveConfig() {
-        RemindTimerConfig.Client.Clock configClock = RemindTimerConfig.CLIENT.clock;
+        RemindTimerConfig.Client.Chronometer configChronometer = RemindTimerConfig.CLIENT.chronometer;
 
-        configClock.formatText.set(clock.getFormatText());
-        configClock.drawBackground.set(clock.isDrawBackground());
-        configClock.use12HourFormat.set(clock.isUse12HourFormat());
+        configChronometer.format.set(chronometer.getFormat());
+        configChronometer.drawBackground.set(chronometer.isDrawBackground());
 
-        configClock.rgbModeText.set(clock.getRgbModeText());
-        configClock.rgbModeBackground.set(clock.getRgbModeBackground());
+        configChronometer.rgbModeText.set(chronometer.getRgbModeText());
+        configChronometer.rgbModeBackground.set(chronometer.getRgbModeBackground());
 
-        configClock.redText.set(clock.getRedText());
-        configClock.greenText.set(clock.getGreenText());
-        configClock.blueText.set(clock.getBlueText());
-        configClock.alphaText.set(clock.getAlphaText());
-        configClock.rgbSpeedText.set(clock.getRgbSpeedText());
+        configChronometer.redText.set(chronometer.getRedText());
+        configChronometer.greenText.set(chronometer.getGreenText());
+        configChronometer.blueText.set(chronometer.getBlueText());
+        configChronometer.alphaText.set(chronometer.getAlphaText());
+        configChronometer.rgbSpeedText.set(chronometer.getRgbSpeedText());
 
-        configClock.redBackground.set(clock.getRedBackground());
-        configClock.greenBackground.set(clock.getGreenBackground());
-        configClock.blueBackground.set(clock.getBlueBackground());
-        configClock.alphaBackground.set(clock.getAlphaBackground());
-        configClock.rgbSpeedBackground.set(clock.getRgbSpeedBackground());
+        configChronometer.redBackground.set(chronometer.getRedBackground());
+        configChronometer.greenBackground.set(chronometer.getGreenBackground());
+        configChronometer.blueBackground.set(chronometer.getBlueBackground());
+        configChronometer.alphaBackground.set(chronometer.getAlphaBackground());
+        configChronometer.rgbSpeedBackground.set(chronometer.getRgbSpeedBackground());
 
-        configClock.textRightToLeftDirection.set(clock.isTextRightToLeftDirection());
-        configClock.backgroundRightToLeftDirection.set(clock.isBackgroundRightToLeftDirection());
+        configChronometer.textRightToLeftDirection.set(chronometer.isTextRightToLeftDirection());
+        configChronometer.backgroundRightToLeftDirection.set(chronometer.isBackgroundRightToLeftDirection());
     }
 
     private void drawGradientRect(double left, double top, double right, double bottom, int z, int coltl, int coltr, int colbl,
