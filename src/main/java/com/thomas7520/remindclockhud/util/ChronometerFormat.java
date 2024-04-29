@@ -1,4 +1,4 @@
-package com.thomas7520.remindtimerhud.util;
+package com.thomas7520.remindclockhud.util;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 

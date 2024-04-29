@@ -1,4 +1,4 @@
-package com.thomas7520.remindtimerhud.util;
+package com.thomas7520.remindclockhud.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;

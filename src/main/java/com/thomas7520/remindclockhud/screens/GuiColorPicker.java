@@ -1,4 +1,4 @@
-package com.thomas7520.remindtimerhud.screens;
+package com.thomas7520.remindclockhud.screens;
 
 
 

@@ -1,16 +1,11 @@
-package com.thomas7520.remindtimerhud.screens.chronometer;
+package com.thomas7520.remindclockhud.screens.chronometer;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.thomas7520.remindtimerhud.RemindTimerHUD;
-import com.thomas7520.remindtimerhud.object.Chronometer;
-import com.thomas7520.remindtimerhud.util.HUDMode;
-import com.thomas7520.remindtimerhud.util.RemindTimerConfig;
-import com.thomas7520.remindtimerhud.util.RemindTimerUtil;
+import com.thomas7520.remindclockhud.RemindClockHUD;
+import com.thomas7520.remindclockhud.object.Chronometer;
+import com.thomas7520.remindclockhud.util.RemindClockConfig;
+import com.thomas7520.remindclockhud.util.RemindClockUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -33,7 +28,7 @@ public class ChronometerPositionScreen extends Screen {
         super(Component.empty());
 
         this.lastScreen = lastScreen;
-        this.chronometer = RemindTimerHUD.getChronometer();
+        this.chronometer = RemindClockHUD.getChronometer();
     }
 
 
@@ -62,7 +57,7 @@ public class ChronometerPositionScreen extends Screen {
     public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
         if (clicked) {
             clicked = false;
-            RemindTimerConfig.Client.Chronometer configChronometer = RemindTimerConfig.CLIENT.chronometer;
+            RemindClockConfig.Client.Chronometer configChronometer = RemindClockConfig.CLIENT.chronometer;
             configChronometer.posX.set(chronometer.getPosX());
             configChronometer.posY.set(chronometer.getPosY());
         }
@@ -104,7 +99,7 @@ public class ChronometerPositionScreen extends Screen {
         x = (float) (chronometer.getPosX() / 100.0 * minecraft.getWindow().getGuiScaledWidth());
         y = (float) (chronometer.getPosY() / 100.0 * minecraft.getWindow().getGuiScaledHeight());
 
-        RemindTimerUtil.drawChronometer(chronometer, dateFormatted, graphics, font, x, y, width, height);
+        RemindClockUtil.drawChronometer(chronometer, dateFormatted, graphics, font, x, y, width, height);
 
     }
 
@@ -143,7 +138,7 @@ public class ChronometerPositionScreen extends Screen {
         chronometer.setPosX(percentageX);
         chronometer.setPosY(percentageY);
 
-        RemindTimerConfig.Client.Chronometer configChronometer = RemindTimerConfig.CLIENT.chronometer;
+        RemindClockConfig.Client.Chronometer configChronometer = RemindClockConfig.CLIENT.chronometer;
         configChronometer.posX.set(chronometer.getPosX());
         configChronometer.posY.set(chronometer.getPosY());
 

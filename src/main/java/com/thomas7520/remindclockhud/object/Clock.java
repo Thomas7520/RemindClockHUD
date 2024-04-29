@@ -1,6 +1,6 @@
-package com.thomas7520.remindtimerhud.object;
+package com.thomas7520.remindclockhud.object;
 
-import com.thomas7520.remindtimerhud.util.HUDMode;
+import com.thomas7520.remindclockhud.util.HUDMode;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;

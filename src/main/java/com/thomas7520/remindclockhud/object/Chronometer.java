@@ -1,8 +1,8 @@
-package com.thomas7520.remindtimerhud.object;
+package com.thomas7520.remindclockhud.object;
 
 
-import com.thomas7520.remindtimerhud.util.ChronometerFormat;
-import com.thomas7520.remindtimerhud.util.HUDMode;
+import com.thomas7520.remindclockhud.util.ChronometerFormat;
+import com.thomas7520.remindclockhud.util.HUDMode;
 
 import java.util.ArrayList;
 import java.util.List;

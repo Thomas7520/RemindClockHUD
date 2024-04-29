@@ -1,19 +1,11 @@
-package com.thomas7520.remindtimerhud.screens.clock;
+package com.thomas7520.remindclockhud.screens.clock;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.thomas7520.remindtimerhud.RemindTimerHUD;
-import com.thomas7520.remindtimerhud.object.Clock;
-import com.thomas7520.remindtimerhud.util.HUDMode;
-import com.thomas7520.remindtimerhud.util.RemindTimerConfig;
-import com.thomas7520.remindtimerhud.util.RemindTimerUtil;
+import com.thomas7520.remindclockhud.RemindClockHUD;
+import com.thomas7520.remindclockhud.object.Clock;
+import com.thomas7520.remindclockhud.util.RemindClockConfig;
+import com.thomas7520.remindclockhud.util.RemindClockUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
@@ -33,7 +25,7 @@ public class ClockPositionScreen extends Screen {
         super(Component.empty());
 
         this.lastScreen = lastScreen;
-        this.clock = RemindTimerHUD.getClock();
+        this.clock = RemindClockHUD.getClock();
     }
 
     @Override
@@ -57,7 +49,7 @@ public class ClockPositionScreen extends Screen {
     public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
         if(clicked) {
             clicked = false;
-            RemindTimerConfig.Client.Clock configClock = RemindTimerConfig.CLIENT.clock;
+            RemindClockConfig.Client.Clock configClock = RemindClockConfig.CLIENT.clock;
             configClock.posX.set(clock.getPosX());
             configClock.posY.set(clock.getPosY());
         }
@@ -90,7 +82,7 @@ public class ClockPositionScreen extends Screen {
         x = (float) (clock.getPosX() / 100.0 * minecraft.getWindow().getGuiScaledWidth());
         y = (float) (clock.getPosY() / 100.0 * minecraft.getWindow().getGuiScaledHeight());
 
-        RemindTimerUtil.renderClock(clock, graphics, font, x, y, width, height);
+        RemindClockUtil.renderClock(clock, graphics, font, x, y, width, height);
 
     }
 
@@ -129,7 +121,7 @@ public class ClockPositionScreen extends Screen {
         clock.setPosX(percentageX);
         clock.setPosY(percentageY);
 
-        RemindTimerConfig.Client.Clock configClock = RemindTimerConfig.CLIENT.clock;
+        RemindClockConfig.Client.Clock configClock = RemindClockConfig.CLIENT.clock;
         configClock.posX.set(clock.getPosX());
         configClock.posY.set(clock.getPosY());
 

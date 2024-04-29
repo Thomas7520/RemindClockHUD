@@ -1,6 +1,6 @@
-package com.thomas7520.remindtimerhud.screens.buttons;
+package com.thomas7520.remindclockhud.screens.buttons;
 
-import com.thomas7520.remindtimerhud.RemindTimerHUD;
+import com.thomas7520.remindclockhud.RemindClockHUD;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -16,6 +16,6 @@ public class InformationButton extends Button {
     public void render(GuiGraphics p_282421_, int p_93658_, int p_93659_, float p_93660_) {
         super.render(p_282421_, p_93658_, p_93659_, p_93660_);
 
-        p_282421_.blit(new ResourceLocation(RemindTimerHUD.MODID, "textures/interrogation.png"), getX() + 2, getY() + 1, 0, 0F, 0F, getWidth() - 4,  getHeight() - 4,  getWidth() - 4, getHeight() - 4);
+        p_282421_.blit(new ResourceLocation(RemindClockHUD.MODID, "textures/interrogation.png"), getX() + 2, getY() + 1, 0, 0F, 0F, getWidth() - 4,  getHeight() - 4,  getWidth() - 4, getHeight() - 4);
     }
 }

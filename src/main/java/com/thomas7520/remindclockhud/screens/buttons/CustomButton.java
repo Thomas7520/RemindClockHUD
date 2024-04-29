@@ -1,4 +1,4 @@
-package com.thomas7520.remindtimerhud.screens.buttons;
+package com.thomas7520.remindclockhud.screens.buttons;
 
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;

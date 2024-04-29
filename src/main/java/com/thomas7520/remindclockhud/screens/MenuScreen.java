@@ -1,19 +1,17 @@
-package com.thomas7520.remindtimerhud.screens;
+package com.thomas7520.remindclockhud.screens;
 
-import com.thomas7520.remindtimerhud.RemindTimerHUD;
-import com.thomas7520.remindtimerhud.screens.buttons.CustomButton;
-import com.thomas7520.remindtimerhud.screens.chronometer.ChronometerScreen;
-import com.thomas7520.remindtimerhud.screens.clock.ClockScreen;
+import com.thomas7520.remindclockhud.RemindClockHUD;
+import com.thomas7520.remindclockhud.screens.buttons.CustomButton;
+import com.thomas7520.remindclockhud.screens.chronometer.ChronometerScreen;
+import com.thomas7520.remindclockhud.screens.clock.ClockScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 
 import java.awt.*;
@@ -26,7 +24,7 @@ public class MenuScreen extends Screen {
     private int guiTop;
 
     public MenuScreen() {
-        super(Component.translatable("remindtimerhud.title"));
+        super(Component.translatable("remindclockhud.title"));
     }
 
 
@@ -36,13 +34,13 @@ public class MenuScreen extends Screen {
         this.guiTop = (this.height) / 2;
 
         addRenderableWidget(new CustomButton(guiLeft - 170 , guiTop - 25, 50, 50, Component.empty(), p_93751_ -> {
-            minecraft.setScreen(new ClockScreen(this, RemindTimerHUD.getClock()));
+            minecraft.setScreen(new ClockScreen(this, RemindClockHUD.getClock()));
         }, Supplier::get){
 
             @Override
             public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 super.render(guiGraphics, mouseX, mouseY, partialTick);
-                guiGraphics.blit(new ResourceLocation(RemindTimerHUD.MODID, "textures/clock.png"), getX() + 5, getY()+ 5, 0, 0F, 0F, 40, 40, 40, 40);
+                guiGraphics.blit(new ResourceLocation(RemindClockHUD.MODID, "textures/clock.png"), getX() + 5, getY()+ 5, 0, 0F, 0F, 40, 40, 40, 40);
 
                 Component clockTitle = Component.translatable("config.clock");
 
@@ -51,13 +49,13 @@ public class MenuScreen extends Screen {
         });
 
         addRenderableWidget(new CustomButton(guiLeft - 170 + 95, guiTop - 25, 50, 50, Component.empty(), p_93751_ -> {
-            minecraft.setScreen(new ChronometerScreen(this, RemindTimerHUD.getChronometer()));
+            minecraft.setScreen(new ChronometerScreen(this, RemindClockHUD.getChronometer()));
         }, Supplier::get){
 
             @Override
             public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 super.render(guiGraphics, mouseX, mouseY, partialTick);
-                guiGraphics.blit(new ResourceLocation(RemindTimerHUD.MODID, "textures/chronometer.png"), getX(), getY() - 2, 0, 0F, 0F, 50, 50, 50, 50);
+                guiGraphics.blit(new ResourceLocation(RemindClockHUD.MODID, "textures/chronometer.png"), getX(), getY() - 2, 0, 0F, 0F, 50, 50, 50, 50);
 
                 Component chronometerTitle = Component.translatable("config.chronometer");
 
@@ -72,7 +70,7 @@ public class MenuScreen extends Screen {
             public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 
                 super.render(guiGraphics, mouseX, mouseY, partialTick);
-                guiGraphics.blit(new ResourceLocation(RemindTimerHUD.MODID, "textures/alarm.png"), getX() + 5, getY()+ 5, 0, 0F, 0F, 40, 40, 40, 40);
+                guiGraphics.blit(new ResourceLocation(RemindClockHUD.MODID, "textures/alarm.png"), getX() + 5, getY()+ 5, 0, 0F, 0F, 40, 40, 40, 40);
 
                 Component alarmTitle = Component.translatable("config.alarm");
 
@@ -92,7 +90,7 @@ public class MenuScreen extends Screen {
 
 
                 super.render(guiGraphics, mouseX, mouseY, partialTick);
-                guiGraphics.blit(new ResourceLocation(RemindTimerHUD.MODID, "textures/remind.png"), getX() + 5, getY() + 2, 0, 0F, 0F, 40, 40, 40, 40);
+                guiGraphics.blit(new ResourceLocation(RemindClockHUD.MODID, "textures/remind.png"), getX() + 5, getY() + 2, 0, 0F, 0F, 40, 40, 40, 40);
 
                 Component remindTitle = Component.translatable("config.remind");
 

@@ -1,16 +1,14 @@
-package com.thomas7520.remindtimerhud.util;
+package com.thomas7520.remindclockhud.util;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.thomas7520.remindtimerhud.RemindTimerHUD;
-import com.thomas7520.remindtimerhud.object.Alarm;
-import com.thomas7520.remindtimerhud.object.Chronometer;
-import com.thomas7520.remindtimerhud.object.Clock;
-import com.thomas7520.remindtimerhud.object.Remind;
+import com.thomas7520.remindclockhud.RemindClockHUD;
+import com.thomas7520.remindclockhud.object.Alarm;
+import com.thomas7520.remindclockhud.object.Chronometer;
+import com.thomas7520.remindclockhud.object.Clock;
+import com.thomas7520.remindclockhud.object.Remind;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -21,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class RemindTimerUtil {
+public class RemindClockUtil {
 
     public final static int RECT_HEIGHT = 12;
     public final static int TEXT_X = 2;
@@ -232,10 +230,8 @@ public class RemindTimerUtil {
         y = Math.max(y, 0);
         y = Math.min(y, height - RECT_HEIGHT);
 
-
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(x,y, 0);
-
 
         if(chronometer.isDrawBackground()) {
             if (chronometer.getRgbModeBackground() == HUDMode.WAVE) {
@@ -352,7 +348,7 @@ public class RemindTimerUtil {
     private static int getFadeClockColor(String dateFormatted, int i) {
         float hue = 1.0F - ((dateFormatted.length() - i + waveCounterClockText) * 2 / 360f);
 
-        if (RemindTimerHUD.getClock().isTextRightToLeftDirection())
+        if (RemindClockHUD.getClock().isTextRightToLeftDirection())
             hue = (dateFormatted.length() + i + waveCounterClockText) * 2 / 360f;
 
         float saturation = 1.0F;
@@ -360,14 +356,14 @@ public class RemindTimerUtil {
 
         int color = Color.HSBtoRGB(hue, saturation, brightness);
 
-        color = (color & 0x00FFFFFF) | (RemindTimerHUD.getClock().getAlphaText() << 24);
+        color = (color & 0x00FFFFFF) | (RemindClockHUD.getClock().getAlphaText() << 24);
         return color;
     }
 
     private static int getFadeChronometerColor(String chornometerFormatted, int i) {
         float hue = 1.0F - ((chornometerFormatted.length() - i + waveCounterChronometerText) * 2 / 360f);
 
-        if (RemindTimerHUD.getClock().isTextRightToLeftDirection())
+        if (RemindClockHUD.getClock().isTextRightToLeftDirection())
             hue = (chornometerFormatted.length() + i + waveCounterChronometerText) * 2 / 360f;
 
         float saturation = 1.0F;
@@ -375,7 +371,7 @@ public class RemindTimerUtil {
 
         int color = Color.HSBtoRGB(hue, saturation, brightness);
 
-        color = (color & 0x00FFFFFF) | (RemindTimerHUD.getChronometer().getAlphaText() << 24);
+        color = (color & 0x00FFFFFF) | (RemindClockHUD.getChronometer().getAlphaText() << 24);
         return color;
     }
 }

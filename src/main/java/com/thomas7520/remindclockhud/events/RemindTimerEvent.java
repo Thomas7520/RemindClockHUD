@@ -1,21 +1,14 @@
-package com.thomas7520.remindtimerhud.events;
+package com.thomas7520.remindclockhud.events;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.thomas7520.remindtimerhud.RemindTimerHUD;
-import com.thomas7520.remindtimerhud.object.Chronometer;
-import com.thomas7520.remindtimerhud.object.Clock;
-import com.thomas7520.remindtimerhud.object.Remind;
-import com.thomas7520.remindtimerhud.screens.MenuScreen;
-import com.thomas7520.remindtimerhud.util.HUDMode;
-import com.thomas7520.remindtimerhud.util.RemindTimerUtil;
+import com.thomas7520.remindclockhud.RemindClockHUD;
+import com.thomas7520.remindclockhud.object.Chronometer;
+import com.thomas7520.remindclockhud.object.Clock;
+import com.thomas7520.remindclockhud.object.Remind;
+import com.thomas7520.remindclockhud.screens.MenuScreen;
+import com.thomas7520.remindclockhud.util.HUDMode;
+import com.thomas7520.remindclockhud.util.RemindClockUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
@@ -24,28 +17,26 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.awt.*;
-
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT, modid = RemindTimerHUD.MODID)
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT, modid = RemindClockHUD.MODID)
 public class RemindTimerEvent {
 
 
 
     @SubscribeEvent
     public static void onKeyInputEvent(InputEvent.Key event) {
-        if(RemindTimerUtil.guiBind.isDown()) {
+        if(RemindClockUtil.guiBind.isDown()) {
             Minecraft.getInstance().setScreen(new MenuScreen());
             //RemindTimerUtil.getReminds().add(new Remind("Test", 9801, false, false));
         }
 
-        if(RemindTimerUtil.addLapsBind.isDown()) {
-            for (Remind remind : RemindTimerUtil.getReminds()) {
+        if(RemindClockUtil.addLapsBind.isDown()) {
+            for (Remind remind : RemindClockUtil.getReminds()) {
                 remind.setPaused(!remind.isPaused());
             }
         }
 
-        if(RemindTimerUtil.switchChronometerBind.isDown()) {
-            Chronometer chronometer = RemindTimerHUD.getChronometer();
+        if(RemindClockUtil.switchChronometerBind.isDown()) {
+            Chronometer chronometer = RemindClockHUD.getChronometer();
 
             if(!chronometer.isEnable()) return;
 
@@ -56,8 +47,8 @@ public class RemindTimerEvent {
             }
         }
 
-        if(RemindTimerUtil.resetChronometerBind.isDown()) {
-            Chronometer chronometer = RemindTimerHUD.getChronometer();
+        if(RemindClockUtil.resetChronometerBind.isDown()) {
+            Chronometer chronometer = RemindClockHUD.getChronometer();
 
             if(!chronometer.isEnable() || !chronometer.isStarted() || !chronometer.isPaused()) return;
 
@@ -72,7 +63,7 @@ public class RemindTimerEvent {
         if(event.phase != TickEvent.Phase.END) return;
 
         if(ticksElasped % 20 == 0) {
-            for (Remind remind : RemindTimerUtil.getReminds()) {
+            for (Remind remind : RemindClockUtil.getReminds()) {
                 if (remind.isPaused() || remind.isRinging()) continue;
 
                 if (remind.getTime() <= 0) {
@@ -91,24 +82,24 @@ public class RemindTimerEvent {
 
         if (Minecraft.getInstance().player != null) {
 
-            if(RemindTimerHUD.getClock().isEnable()) {
-                if (RemindTimerHUD.getClock().getRgbModeText() != HUDMode.STATIC) {
-                    RemindTimerUtil.waveCounterClockText += (RemindTimerHUD.getClock().getRgbSpeedText() - 1) / (100 - 1f) * (10 - 1) + 1;
+            if(RemindClockHUD.getClock().isEnable()) {
+                if (RemindClockHUD.getClock().getRgbModeText() != HUDMode.STATIC) {
+                    RemindClockUtil.waveCounterClockText += (RemindClockHUD.getClock().getRgbSpeedText() - 1) / (100 - 1f) * (10 - 1) + 1;
                 }
 
-                if (RemindTimerHUD.getClock().isDrawBackground() && RemindTimerHUD.getClock().getRgbModeBackground() != HUDMode.STATIC) {
-                    RemindTimerUtil.waveCounterClockBackground += (RemindTimerHUD.getClock().getRgbSpeedBackground() - 1) / (100 - 1f) * (20 - 1) + 1;
+                if (RemindClockHUD.getClock().isDrawBackground() && RemindClockHUD.getClock().getRgbModeBackground() != HUDMode.STATIC) {
+                    RemindClockUtil.waveCounterClockBackground += (RemindClockHUD.getClock().getRgbSpeedBackground() - 1) / (100 - 1f) * (20 - 1) + 1;
                 }
             }
 
-            if(RemindTimerHUD.getChronometer().isEnable()) {
+            if(RemindClockHUD.getChronometer().isEnable()) {
 
-                if (RemindTimerHUD.getChronometer().getRgbModeText() != HUDMode.STATIC) {
-                    RemindTimerUtil.waveCounterChronometerText += (RemindTimerHUD.getChronometer().getRgbSpeedText() - 1) / (100 - 1f) * (10 - 1) + 1;
+                if (RemindClockHUD.getChronometer().getRgbModeText() != HUDMode.STATIC) {
+                    RemindClockUtil.waveCounterChronometerText += (RemindClockHUD.getChronometer().getRgbSpeedText() - 1) / (100 - 1f) * (10 - 1) + 1;
                 }
 
-                if (RemindTimerHUD.getChronometer().isDrawBackground() && RemindTimerHUD.getChronometer().getRgbModeBackground() != HUDMode.STATIC) {
-                    RemindTimerUtil.waveCounterChronometerBackground += (RemindTimerHUD.getChronometer().getRgbSpeedBackground() - 1) / (100 - 1f) * (10 - 1) + 1;
+                if (RemindClockHUD.getChronometer().isDrawBackground() && RemindClockHUD.getChronometer().getRgbModeBackground() != HUDMode.STATIC) {
+                    RemindClockUtil.waveCounterChronometerBackground += (RemindClockHUD.getChronometer().getRgbSpeedBackground() - 1) / (100 - 1f) * (10 - 1) + 1;
                 }
             }
         }
@@ -130,7 +121,7 @@ public class RemindTimerEvent {
 //        //RemindTimerUtil.circleDoubleProgress(event.getGuievent.getGuiGraphics()().guiWidth() / 2, event.getGuievent.getGuiGraphics()().guiHeight() / 2, 10F, 6F, 180, 180F, 64, new Color(91, 13, 13, 200));
 
 
-        Clock clock = RemindTimerHUD.getClock();
+        Clock clock = RemindClockHUD.getClock();
 
         int width = event.getGuiGraphics().guiWidth();
         int height = event.getGuiGraphics().guiHeight();
@@ -141,10 +132,10 @@ public class RemindTimerEvent {
         float y = (float) (clock.getPosY() / 100.0 * event.getWindow().getGuiScaledHeight());
 
         if(clock.isEnable()) {
-            RemindTimerUtil.renderClock(clock, event.getGuiGraphics(), font, x, y, width, height);
+            RemindClockUtil.renderClock(clock, event.getGuiGraphics(), font, x, y, width, height);
         }
 
-        Chronometer chronometer = RemindTimerHUD.getChronometer();
+        Chronometer chronometer = RemindClockHUD.getChronometer();
 
         if(chronometer.isEnable() && (chronometer.isStarted() || chronometer.isIdleRender())) {
 
@@ -160,7 +151,7 @@ public class RemindTimerEvent {
             x = (float) (chronometer.getPosX() / 100.0 * event.getWindow().getGuiScaledWidth());
             y = (float) (chronometer.getPosY() / 100.0 * event.getWindow().getGuiScaledHeight());
 
-            RemindTimerUtil.drawChronometer(chronometer, chronometerFormatted, event.getGuiGraphics(), font, x, y, width, height);
+            RemindClockUtil.drawChronometer(chronometer, chronometerFormatted, event.getGuiGraphics(), font, x, y, width, height);
         }
     }
 }

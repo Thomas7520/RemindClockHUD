@@ -1,9 +1,9 @@
-package com.thomas7520.remindtimerhud.util;
+package com.thomas7520.remindclockhud.util;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class RemindTimerConfig {
+public class RemindClockConfig {
 
     public static final String CLOCK_CATEGORY = "clock";
     public static final String CHRONOMETER_CATEGORY = "chronometer";

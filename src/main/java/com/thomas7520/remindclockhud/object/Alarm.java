@@ -1,4 +1,4 @@
-package com.thomas7520.remindtimerhud.object;
+package com.thomas7520.remindclockhud.object;
 
 public class Alarm {
 
