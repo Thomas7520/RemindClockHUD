@@ -9,15 +9,15 @@ import com.thomas7520.remindclockhud.object.Chronometer;
 import com.thomas7520.remindclockhud.object.Clock;
 import com.thomas7520.remindclockhud.object.Remind;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
+import org.apache.commons.lang3.LocaleUtils;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.UUID;
 
 public class RemindClockUtil {
 
@@ -373,5 +373,13 @@ public class RemindClockUtil {
 
         color = (color & 0x00FFFFFF) | (RemindClockHUD.getChronometer().getAlphaText() << 24);
         return color;
+    }
+
+    public static Locale getMinecraftLocalLanguage() {
+        String language = Minecraft.getInstance().options.languageCode;
+        String lastTwoChars = language.substring(language.length() - 2).toUpperCase();
+        String result = language.substring(0, language.length() - 2) + lastTwoChars;
+
+        return Optional.of(LocaleUtils.toLocale(result)).orElse(Locale.getDefault());
     }
 }

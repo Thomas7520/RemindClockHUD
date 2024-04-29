@@ -1,6 +1,7 @@
 package com.thomas7520.remindclockhud.object;
 
 import com.thomas7520.remindclockhud.util.HUDMode;
+import com.thomas7520.remindclockhud.util.RemindClockUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
@@ -206,7 +207,8 @@ public class Clock {
     @Override
     public String toString() {
         return "Clock{" +
-                "formatText='" + formatText + '\'' +
+                "enable=" + enable +
+                ", formatText='" + formatText + '\'' +
                 ", drawBackground=" + drawBackground +
                 ", use12HourFormat=" + use12HourFormat +
                 ", rgbModeText=" + rgbModeText +
@@ -235,20 +237,23 @@ public class Clock {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter timeFormatter;
 
+        Locale locale = RemindClockUtil.getMinecraftLocalLanguage();
+
         if (use12HourFormat) {
-            timeFormatter = DateTimeFormatter.ofPattern("hh:mm:ss a");
+            timeFormatter = DateTimeFormatter.ofPattern("hh:mm:ss a", locale);
         } else {
-            timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+            timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss", locale);
         }
 
-        DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("EEEE", Locale.getDefault()); // Format pour le nom du jour
 
-        DateTimeFormatter dayShortFormatter = DateTimeFormatter.ofPattern("E", Locale.getDefault()); // Format pour l'abréviation du jour
+        DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("EEEE", locale);
 
-        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMMM", Locale.getDefault()); // Format pour le mois
-        DateTimeFormatter shortMonthFormatter = DateTimeFormatter.ofPattern("MMM", Locale.getDefault()); // Format pour le mois
+        DateTimeFormatter dayShortFormatter = DateTimeFormatter.ofPattern("E", locale);
 
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMMM", locale);
+        DateTimeFormatter shortMonthFormatter = DateTimeFormatter.ofPattern("MMM", locale);
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", locale);
 
         date = formatText
                 .replace("%hh", timeFormatter.format(now).substring(0, 2))

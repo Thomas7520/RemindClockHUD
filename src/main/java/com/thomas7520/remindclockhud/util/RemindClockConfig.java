@@ -65,15 +65,15 @@ public class RemindClockConfig {
             clock.rgbModeText = builder.comment("RGB Mode Text (Static, Wave, Cycle)").defineEnum("rgbModeText", HUDMode.STATIC);
             clock.rgbModeBackground = builder.comment("RGB Mode Background (Static, Wave, Cycle)").defineEnum("rgbModeBackground", HUDMode.STATIC);
 
-            clock.redText = builder.defineInRange("redText", 100, 0, 255);
-            clock.greenText = builder.defineInRange("greenText", 100, 0, 255);
-            clock.blueText = builder.defineInRange("blueText", 100, 0, 255);
-            clock.alphaText = builder.defineInRange("alphaText", 100, 0, 255);
+            clock.redText = builder.defineInRange("redText", 255, 0, 255);
+            clock.greenText = builder.defineInRange("greenText", 255, 0, 255);
+            clock.blueText = builder.defineInRange("blueText", 255, 0, 255);
+            clock.alphaText = builder.defineInRange("alphaText", 186, 0, 255);
             clock.rgbSpeedText = builder.defineInRange("rgbSpeedText", 50, 0, 100);
 
-            clock.redBackground = builder.defineInRange("redBackground", 100, 0, 255);
-            clock.greenBackground = builder.defineInRange("greenBackground", 100, 0, 255);
-            clock.blueBackground = builder.defineInRange("blueBackground", 100, 0, 255);
+            clock.redBackground = builder.defineInRange("redBackground", 140, 0, 255);
+            clock.greenBackground = builder.defineInRange("greenBackground", 255, 0, 255);
+            clock.blueBackground = builder.defineInRange("blueBackground", 255, 0, 255);
             clock.alphaBackground = builder.defineInRange("alphaBackground", 100, 0, 255);
             clock.rgbSpeedBackground = builder.defineInRange("rgbSpeedBackground", 50, 0, 100);
 
@@ -90,22 +90,22 @@ public class RemindClockConfig {
             // TODO change to false after doing switch on/off
             chronometer.enable = builder.comment("Enable chronometer").define("enable", true);
 
-            chronometer.format = builder.comment("Chronometer format.").defineEnum("format", ChronometerFormat.MN_SS);
+            chronometer.format = builder.comment("Chronometer format.").defineEnum("format", ChronometerFormat.SS_MS);
 
             chronometer.drawBackground = builder.comment("Allow to draw background for text.").define("drawBackground", true);
 
             chronometer.rgbModeText = builder.comment("RGB Mode Text (Static, Wave, Cycle)").defineEnum("rgbModeText", HUDMode.STATIC);
             chronometer.rgbModeBackground = builder.comment("RGB Mode Background (Static, Wave, Cycle)").defineEnum("rgbModeBackground", HUDMode.STATIC);
 
-            chronometer.redText = builder.defineInRange("redText", 100, 0, 255);
-            chronometer.greenText = builder.defineInRange("greenText", 100, 0, 255);
-            chronometer.blueText = builder.defineInRange("blueText", 100, 0, 255);
-            chronometer.alphaText = builder.defineInRange("alphaText", 100, 0, 255);
+            chronometer.redText = builder.defineInRange("redText", 255, 0, 255);
+            chronometer.greenText = builder.defineInRange("greenText", 255, 0, 255);
+            chronometer.blueText = builder.defineInRange("blueText", 255, 0, 255);
+            chronometer.alphaText = builder.defineInRange("alphaText", 186, 0, 255);
             chronometer.rgbSpeedText = builder.defineInRange("rgbSpeedText", 50, 0, 100);
 
-            chronometer.redBackground = builder.defineInRange("redBackground", 100, 0, 255);
-            chronometer.greenBackground = builder.defineInRange("greenBackground", 100, 0, 255);
-            chronometer.blueBackground = builder.defineInRange("blueBackground", 100, 0, 255);
+            chronometer.redBackground = builder.defineInRange("redBackground", 140, 0, 255);
+            chronometer.greenBackground = builder.defineInRange("greenBackground", 255, 0, 255);
+            chronometer.blueBackground = builder.defineInRange("blueBackground", 255, 0, 255);
             chronometer.alphaBackground = builder.defineInRange("alphaBackground", 100, 0, 255);
             chronometer.rgbSpeedBackground = builder.defineInRange("rgbSpeedBackground", 50, 0, 100);
 
@@ -115,7 +115,7 @@ public class RemindClockConfig {
             chronometer.idleRender = builder.comment("Enable chronometer render when it is idle.").define("idleRender", false);
 
             chronometer.posX = builder.comment("Value of x screen in percentage.").defineInRange("posX",0, 0, 100d);
-            chronometer.posY = builder.comment("Value of y screen in percentage.").defineInRange("posY", 0,0 , 100d);
+            chronometer.posY = builder.comment("Value of y screen in percentage.").defineInRange("posY", 47.45,0 , 100d);
         }
     }
 }

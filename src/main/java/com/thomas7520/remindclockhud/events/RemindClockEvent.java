@@ -26,13 +26,6 @@ public class RemindClockEvent {
     public static void onKeyInputEvent(InputEvent.Key event) {
         if(RemindClockUtil.guiBind.isDown()) {
             Minecraft.getInstance().setScreen(new MenuScreen());
-            //RemindTimerUtil.getReminds().add(new Remind("Test", 9801, false, false));
-        }
-
-        if(RemindClockUtil.addLapsBind.isDown()) {
-            for (Remind remind : RemindClockUtil.getReminds()) {
-                remind.setPaused(!remind.isPaused());
-            }
         }
 
         if(RemindClockUtil.switchChronometerBind.isDown()) {
