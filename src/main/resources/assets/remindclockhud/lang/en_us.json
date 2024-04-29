@@ -1,5 +1,5 @@
 {
-  "remindclockhud.title": "RemindTimerHUD",
+  "remindclockhud.title": "RemindClockHUD",
   
   "config.clock": "Clock",
   "config.alarm": "Alarm",
@@ -36,5 +36,11 @@
   "text.alpha": "Alpha",
   "text.speed": "RGB Speed",
   "text.direction_lr": "LEFT TO RIGHT",
-  "text.direction_rl": "RIGHT TO LEFT"
+  "text.direction_rl": "RIGHT TO LEFT",
+
+  "key.categories.remindclockhud": "RemindClockHUD ",
+  "key.remindclockhud.opengui": "Open Gui Settings",
+  "key.remindclockhud.switchchronometer": "Start/Pause Chronometer",
+  "key.remindclockhud.resetchronometer": "Reset Chronometer Time"
+
 }

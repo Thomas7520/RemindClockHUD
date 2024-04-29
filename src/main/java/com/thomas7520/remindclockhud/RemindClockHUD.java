@@ -81,7 +81,7 @@ public class RemindClockHUD {
         RemindClockUtil.guiBind = new KeyMapping("key.remindclockhud.opengui" , GLFW.GLFW_KEY_H, "key.categories.remindclockhud");
         RemindClockUtil.switchChronometerBind = new KeyMapping("key.remindclockhud.switchchronometer" , GLFW.GLFW_KEY_J, "key.categories.remindclockhud");
         //RemindTimerUtil.addLapsBind = new KeyMapping("key.remindclockhud.openoptions.addlaps" , GLFW.GLFW_KEY_K, "key.categories.remindclockhud");
-        RemindClockUtil.resetChronometerBind = new KeyMapping("key.remindclockhud.openoptions.resetchronometer" , GLFW.GLFW_KEY_M, "key.categories.remindclockhud");
+        RemindClockUtil.resetChronometerBind = new KeyMapping("key.remindclockhud.openoptions.resetchronometer" , GLFW.GLFW_KEY_K, "key.categories.remindclockhud");
         //RemindTimerUtil.stopAlarm = new KeyMapping("key.remindclockhud.openoptions.stopalarm" , GLFW.GLFW_KEY_N, "key.categories.remindclockhud");
 
         event.register(RemindClockUtil.guiBind);

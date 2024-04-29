@@ -1,5 +1,5 @@
 {
-  "remindclockhud.title": "RemindTimerHUD",
+  "remindclockhud.title": "RemindClockHUD",
 
   "config.clock": "Horloge",
   "config.alarm": "Alarme",
@@ -36,5 +36,10 @@
   "text.alpha": "Transparence",
   "text.speed": "Vitesse RVB",
   "text.direction_lr": "Gauche à Droite",
-  "text.direction_rl": "Droite à Gauche"
+  "text.direction_rl": "Droite à Gauche",
+
+  "key.categories.remindclockhud": "RemindClockHUD ",
+  "key.remindclockhud.opengui": "Ouvrir Menu Options",
+  "key.remindclockhud.switchchronometer": "Lancer/Mettre Chronomètre",
+  "key.remindclockhud.resetchronometer": "Réinitialiser Temps Chronomètre"
 }
