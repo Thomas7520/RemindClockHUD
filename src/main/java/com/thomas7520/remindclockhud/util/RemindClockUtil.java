@@ -149,7 +149,7 @@ public class RemindClockUtil {
                     colorStart = (colorStart & 0x00FFFFFF) | (clock.getAlphaBackground() << 24);
                     colorEnd = (colorEnd & 0x00FFFFFF) | (clock.getAlphaBackground() << 24);
 
-                    drawGradientRect(x + i, y, x + i + 1, y + RECT_HEIGHT, 0, colorStart, colorEnd, colorStart, colorEnd);
+                    drawGradientRect(x + i, y-2, x + i + 1, y + RECT_HEIGHT, 0, colorStart, colorEnd, colorStart, colorEnd);
                 }
             } else if (clock.getRgbModeBackground() == HUDMode.CYCLE) {
 
@@ -168,7 +168,7 @@ public class RemindClockUtil {
                 colorStart = (colorStart & 0x00FFFFFF) | (clock.getAlphaBackground() << 24);
                 colorEnd = (colorEnd & 0x00FFFFFF) | (clock.getAlphaBackground() << 24);
 
-                drawGradientRect(x, y, x + rectWidth, y + RECT_HEIGHT, 0, colorStart, colorStart, colorEnd, colorEnd);
+                drawGradientRect(x, y-2, x + rectWidth, y + RECT_HEIGHT, 0, colorStart, colorStart, colorEnd, colorEnd);
             } else {
                 int colorBackground = (clock.getAlphaBackground() << 24 | clock.getRedBackground() << 16 | clock.getGreenBackground() << 8 | clock.getBlueBackground());
 
@@ -253,7 +253,7 @@ public class RemindClockUtil {
 
                     colorEnd = (colorEnd & 0x00FFFFFF) | (chronometer.getAlphaBackground() << 24);
 
-                    drawGradientRect(x + i, y, x + i + 1, y + RECT_HEIGHT, 0, colorStart, colorEnd, colorStart, colorEnd);
+                    drawGradientRect(x + i, y-2, x + i + 1, y + RECT_HEIGHT, 0, colorStart, colorEnd, colorStart, colorEnd);
                 }
             } else if (chronometer.getRgbModeBackground() == HUDMode.CYCLE) {
 
@@ -273,7 +273,7 @@ public class RemindClockUtil {
 
                 colorEnd = (colorEnd & 0x00FFFFFF) | (chronometer.getAlphaBackground() << 24);
 
-                drawGradientRect(x, y, x+rectWidth, y+ RECT_HEIGHT, 0, colorStart, colorStart, colorEnd, colorEnd);
+                drawGradientRect(x, y-2, x+rectWidth, y+ RECT_HEIGHT, 0, colorStart, colorStart, colorEnd, colorEnd);
             } else {
                 int colorBackground = (chronometer.getAlphaBackground() << 24 | chronometer.getRedBackground() << 16 | chronometer.getGreenBackground() << 8 | chronometer.getBlueBackground());
 
