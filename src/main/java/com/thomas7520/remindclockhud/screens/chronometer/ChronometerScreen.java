@@ -466,7 +466,7 @@ public class ChronometerScreen extends Screen {
     @Override
     public void onClose() {
         saveConfig();
-        super.onClose();
+        minecraft.setScreen(lastScreen);
     }
 
     private void saveConfig() {
