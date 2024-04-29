@@ -77,11 +77,10 @@ public class ButtonDropDown extends AbstractButton {
 
     @Override
     protected void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        super.renderWidget(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
         Minecraft minecraft = Minecraft.getInstance();
 
         pGuiGraphics.pose().pushPose();
-        pGuiGraphics.pose().translate(0,0, 10);
+        pGuiGraphics.pose().translate(0,0, 10); // To be in foreground
         if(focused) {
             for (int i = 0; i < entries.size(); i++) {
                 Entry entry = entries.get(i);
@@ -90,15 +89,17 @@ public class ButtonDropDown extends AbstractButton {
                 RenderSystem.enableBlend();
                 RenderSystem.enableDepthTest();
 
-                boolean hovered = pMouseX >= getX() && pMouseX <= (getX() + getWidth()) && pMouseY >= getY() + getHeight() + 20 * i && pMouseY <= getY() + getHeight() + 20 * (i+1);
+                boolean entryHovered = pMouseX >= getX() && pMouseX <= (getX() + getWidth()) && pMouseY >= getY() + getHeight() + 20 * i && pMouseY <= getY() + getHeight() + 20 * (i+1);
 
-                pGuiGraphics.fill(getX(), getY() + getHeight() + 20 * i, getX() + getWidth(), getY() + getHeight() + 20 * (i+1), hovered ? Color.WHITE.getRGB() : -6250336);
+                pGuiGraphics.fill(getX(), getY() + getHeight() + 20 * i, getX() + getWidth(), getY() + getHeight() + 20 * (i+1), entryHovered ? Color.WHITE.getRGB() : -6250336);
 
                 pGuiGraphics.fill(getX()+1, getY() + getHeight() + 20 * i+1, getX() + getWidth()-1, getY() + getHeight() + 20 * (i+1)-1, -16777216);
                 renderScrollingString(pGuiGraphics, minecraft.font, Component.literal(entry.getName()), getX() + 2, getY() + getHeight() + 10 + 20 * i - 5, getX()+getWidth() - 2, getY() + getHeight()  + 10 + 20 * i + 3, Color.WHITE.getRGB());
             }
         }
         pGuiGraphics.pose().popPose();
+
+        super.renderWidget(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
     }
 
     private int getTextureY() {

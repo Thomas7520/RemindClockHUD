@@ -49,11 +49,8 @@ public class ChronometerPositionScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-
-
         if (pMouseX >= x && pMouseX <= x + font.width(chronometer.getFormat().formatTime(System.currentTimeMillis())) + 3
                 && pMouseY >= y && pMouseY <= y + 12) {
-
             if (!clicked) {
                 clicked = true;
             }

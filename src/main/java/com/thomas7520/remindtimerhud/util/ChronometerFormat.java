@@ -4,6 +4,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 
 public enum ChronometerFormat {
 
+    S_MS("s.SSS"),
     SS_MS("ss.SSS"),
     MN_SS("mm:ss"),
     MN_SS_MS("mm:ss.SSS"),

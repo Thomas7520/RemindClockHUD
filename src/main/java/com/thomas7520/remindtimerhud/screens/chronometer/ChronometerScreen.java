@@ -6,7 +6,9 @@ import com.thomas7520.remindtimerhud.object.Chronometer;
 import com.thomas7520.remindtimerhud.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
@@ -387,10 +389,7 @@ public class ChronometerScreen extends Screen {
         sliderRGBBackground.visible = chronometer.getRgbModeBackground() == HUDMode.WAVE || chronometer.getRgbModeBackground() == HUDMode.CYCLE;
 
 
-        this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (p_280842_) -> {
-            saveConfig();
-            this.minecraft.setScreen(this.lastScreen);
-        }).bounds(this.width / 2 - 100, this.height - 27, 200, 20).build());
+
 
 
         net.minecraft.client.gui.layouts.GridLayout gridlayout = new net.minecraft.client.gui.layouts.GridLayout();
@@ -427,28 +426,36 @@ public class ChronometerScreen extends Screen {
         FrameLayout.alignInRectangle(gridlayout, 0, 0, this.width, this.height, 0.5F, 0.5F);
 
         gridlayout.visitWidgets(this::addRenderableWidget);
+
+        this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (p_280842_) -> {
+                    saveConfig();
+                    this.minecraft.setScreen(this.lastScreen);
+                }).bounds(this.width / 2 - 100, this.height - 27, 200, 20)
+                .build());
+
+
         super.init();
 
     }
-
-
-
-
-
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float p_282465_) {
-        renderBackground(graphics);
-        super.render(graphics, mouseX, mouseY, p_282465_);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float p_282465_) {
+        renderBackground(guiGraphics);
+        super.render(guiGraphics, mouseX, mouseY, p_282465_);
 
         String chronometerFormatted = chronometer.getFormat().formatTime(System.currentTimeMillis());
 
 
-        graphics.drawCenteredString(this.font, this.title, this.width / 2, 3, 16777215);
+        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 3, 16777215);
 
         int x = width / 2 - font.width(chronometerFormatted) / 2;
         int y = predefineFormatsButton.getY() - 20;
 
-        RemindTimerUtil.drawChronometer(chronometer, chronometerFormatted, graphics, font, x, y, width, height);
+        RemindTimerUtil.drawChronometer(chronometer, chronometerFormatted, guiGraphics, font, x, y, width, height);
+    }
+
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
     private HUDMode getNextMode(HUDMode currentOption) {

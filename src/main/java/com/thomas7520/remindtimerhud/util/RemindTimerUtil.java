@@ -215,7 +215,8 @@ public class RemindTimerUtil {
         RenderSystem.disableBlend();
 
     }
-    
+
+    // TODO When chronometer increase size, it breaks its original position. But if it's in a corner, it's good. So ?
     public static void drawChronometer(Chronometer chronometer, String chronometerFormatted, GuiGraphics guiGraphics, Font font, double x, double y, int width, int height) {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
