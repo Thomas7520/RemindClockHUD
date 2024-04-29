@@ -16,10 +16,8 @@ public class ClockPositionScreen extends Screen {
     private Screen lastScreen;
     public Clock clock;
     private boolean clicked;
-    private double percentageX;
-    private double percentageY;
-    private double x;
-    private double y;
+    private double percentageX, percentageY;
+    private double x, y;
 
     public ClockPositionScreen(Screen lastScreen) {
         super(Component.empty());

@@ -19,10 +19,8 @@ public class ChronometerPositionScreen extends Screen {
     private final Screen lastScreen;
     public Chronometer chronometer;
     private boolean clicked;
-    private double percentageX;
-    private double percentageY;
-    private double x;
-    private double y;
+    private double percentageX, percentageY;
+    private double x, y;
 
     public ChronometerPositionScreen(Screen lastScreen) {
         super(Component.empty());

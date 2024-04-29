@@ -20,8 +20,6 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT, modid = RemindClockHUD.MODID)
 public class RemindClockEvent {
 
-
-
     @SubscribeEvent
     public static void onKeyInputEvent(InputEvent.Key event) {
         if(RemindClockUtil.guiBind.isDown()) {
@@ -49,28 +47,28 @@ public class RemindClockEvent {
         }
     }
 
-    private static int ticksElasped;
+    //private static int ticksElasped;
 
     @SubscribeEvent
     public static void tickEvent(TickEvent.ClientTickEvent event) {
         if(event.phase != TickEvent.Phase.END) return;
 
-        if(ticksElasped % 20 == 0) {
-            for (Remind remind : RemindClockUtil.getReminds()) {
-                if (remind.isPaused() || remind.isRinging()) continue;
-
-                if (remind.getTime() <= 0) {
-                    remind.setRinging(true);
-                    // make ringing, or show message, icon, ...
-                    continue;
-                }
-
-                remind.setTime(remind.getTime() - 1);
-            }
-            ticksElasped = 0;
-        }
-
-        ticksElasped++;
+//        if(ticksElasped % 20 == 0) {
+//            for (Remind remind : RemindClockUtil.getReminds()) {
+//                if (remind.isPaused() || remind.isRinging()) continue;
+//
+//                if (remind.getTime() <= 0) {
+//                    remind.setRinging(true);
+//                    // make ringing, or show message, icon, ...
+//                    continue;
+//                }
+//
+//                remind.setTime(remind.getTime() - 1);
+//            }
+//            ticksElasped = 0;
+//        }
+//
+//        ticksElasped++;
 
 
         if (Minecraft.getInstance().player != null) {

@@ -25,8 +25,14 @@ public class ChronometerScreen extends Screen {
     private final Chronometer chronometer;
 
     private final String[] stateValues = {"text.red", "text.green", "text.blue", "text.alpha"};
-    private ForgeSlider sliderRedText, sliderGreenText, sliderBlueText, sliderAlphaText, sliderRGBText;
-    private ForgeSlider sliderRedBackground, sliderGreenBackground, sliderBlueBackground, sliderAlphaBackground, sliderRGBBackground;
+    private ForgeSlider sliderRedText;
+    private ForgeSlider sliderGreenText;
+    private ForgeSlider sliderBlueText;
+    private ForgeSlider sliderRGBText;
+    private ForgeSlider sliderRedBackground;
+    private ForgeSlider sliderGreenBackground;
+    private ForgeSlider sliderBlueBackground;
+    private ForgeSlider sliderRGBBackground;
     private final Screen lastScreen;
     private Button buttonWaveDirection;
     private Button buttonWaveDirectionBackground;
@@ -196,8 +202,8 @@ public class ChronometerScreen extends Screen {
 
         i++;
 
-        sliderAlphaText = new ForgeSlider(0,0, 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.literal("%")
-                , 0, 100, (100 * (chronometer.getAlphaText()-25)) / (255.0 - 25), 1, 1, true) {
+        ForgeSlider sliderAlphaText = new ForgeSlider(0, 0, 100, 20, Component.literal(Component.translatable(stateValues[i - 1]).getString() + " : "), Component.literal("%")
+                , 0, 100, (100 * (chronometer.getAlphaText() - 25)) / (255.0 - 25), 1, 1, true) {
 
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -206,13 +212,13 @@ public class ChronometerScreen extends Screen {
 
                 int rgb = (sliderRedText.getValueInt() << 16 | sliderGreenText.getValueInt() << 8 | sliderBlueText.getValueInt());
 
-                RenderSystem.setShaderColor(1,1,1,1);
-                guiGraphics.blit(new ResourceLocation(RemindClockHUD.MODID, "textures/transparency.png"), getX() + 1, getY() + 1, 0, 0F, 0F, getWidth() - 2, getHeight() - 2,  10,10);
+                RenderSystem.setShaderColor(1, 1, 1, 1);
+                guiGraphics.blit(new ResourceLocation(RemindClockHUD.MODID, "textures/transparency.png"), getX() + 1, getY() + 1, 0, 0F, 0F, getWidth() - 2, getHeight() - 2, 10, 10);
 
-                RemindClockUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,rgb |  (0x46 << 24), rgb | (0xFF << 24), rgb | (0x46 << 24), rgb | (0xFF << 24));
-                RenderSystem.setShaderColor(1,1,1,1);
+                RemindClockUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0, rgb | (0x46 << 24), rgb | (0xFF << 24), rgb | (0x46 << 24), rgb | (0xFF << 24));
+                RenderSystem.setShaderColor(1, 1, 1, 1);
 
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
+                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20, 2, 3, 2, 2);
 
                 renderScrollingString(guiGraphics, mc.font, 2, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
             }
@@ -334,7 +340,7 @@ public class ChronometerScreen extends Screen {
 
         i++;
 
-        sliderAlphaBackground = new ForgeSlider(0,0, 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.literal("%")
+        ForgeSlider sliderAlphaBackground = new ForgeSlider(0, 0, 100, 20, Component.literal(Component.translatable(stateValues[i - 1]).getString() + " : "), Component.literal("%")
                 , 0, 100, (100 * chronometer.getAlphaBackground()) / 255.0, 1, 1, true) {
 
             @Override
@@ -344,13 +350,13 @@ public class ChronometerScreen extends Screen {
 
                 int rgb = (sliderRedBackground.getValueInt() << 16 | sliderGreenBackground.getValueInt() << 8 | sliderBlueBackground.getValueInt());
 
-                RenderSystem.setShaderColor(1,1,1,1);
-                guiGraphics.blit(new ResourceLocation(RemindClockHUD.MODID, "textures/transparency.png"), getX() + 1, getY() + 1, 0, 0F, 0F, getWidth() - 2, getHeight() - 2,  10,10);
+                RenderSystem.setShaderColor(1, 1, 1, 1);
+                guiGraphics.blit(new ResourceLocation(RemindClockHUD.MODID, "textures/transparency.png"), getX() + 1, getY() + 1, 0, 0F, 0F, getWidth() - 2, getHeight() - 2, 10, 10);
 
-                RemindClockUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,rgb |  (0x46 << 24), rgb | (0xFF << 24), rgb | (0x46 << 24), rgb | (0xFF << 24));
-                RenderSystem.setShaderColor(1,1,1,1);
+                RemindClockUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0, rgb | (0x46 << 24), rgb | (0xFF << 24), rgb | (0x46 << 24), rgb | (0xFF << 24));
+                RenderSystem.setShaderColor(1, 1, 1, 1);
 
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
+                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20, 2, 3, 2, 2);
 
                 renderScrollingString(guiGraphics, mc.font, 2, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
             }
