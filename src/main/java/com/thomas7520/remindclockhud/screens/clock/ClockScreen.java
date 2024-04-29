@@ -128,6 +128,7 @@ public class ClockScreen extends Screen {
         tooltipLines.add("%MM");
         tooltipLines.add("%yyyy");
         tooltipLines.add("%yy");
+        tooltipLines.add("%state (AM/PM)");
 
         StringBuilder tooltip = new StringBuilder();
 

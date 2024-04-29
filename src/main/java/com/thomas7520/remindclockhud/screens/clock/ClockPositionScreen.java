@@ -37,7 +37,7 @@ public class ClockPositionScreen extends Screen {
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         if(pMouseX >= x && pMouseX < x + font.width(clock.getFormatText()) + 3
                 && pMouseY >= y && pMouseY < y + 12) {
-            System.out.println("tt");
+
             if (!clicked) {
                 clicked = true;
             }
