@@ -20,6 +20,7 @@ public class Clock {
     private double posX, posY;
 
     public Clock(boolean enable, String formatText, boolean drawBackground, boolean use12HourFormat, HUDMode rgbModeText, HUDMode rgbModeBackground, int redText, int greenText, int blueText, int alphaText, int rgbSpeedText, int redBackground, int greenBackground, int blueBackground, int alphaBackground, int rgbSpeedBackground, boolean textRightToLeftDirection, boolean backgroundRightToLeftDirection, double posX, double posY) {
+        this.enable = enable;
         this.formatText = formatText;
         this.drawBackground = drawBackground;
         this.use12HourFormat = use12HourFormat;
@@ -42,6 +43,13 @@ public class Clock {
     }
 
 
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
 
     public String getFormatText() {
         return formatText;

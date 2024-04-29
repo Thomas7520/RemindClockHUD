@@ -90,7 +90,7 @@ public class RemindTimerConfig {
             // TODO change to false after doing switch on/off
             chronometer.enable = builder.comment("Enable chronometer").define("enable", true);
 
-            chronometer.format = builder.comment("Chronometer format.").defineEnum("format", ChronometerFormat.MN_MS);
+            chronometer.format = builder.comment("Chronometer format.").defineEnum("format", ChronometerFormat.MN_SS);
 
             chronometer.drawBackground = builder.comment("Allow to draw background for text.").define("drawBackground", true);
 

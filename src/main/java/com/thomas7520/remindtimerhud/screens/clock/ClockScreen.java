@@ -11,6 +11,7 @@ import com.thomas7520.remindtimerhud.object.Clock;
 import com.thomas7520.remindtimerhud.screens.buttons.InformationButton;
 import com.thomas7520.remindtimerhud.util.HUDMode;
 import com.thomas7520.remindtimerhud.util.RemindTimerConfig;
+import com.thomas7520.remindtimerhud.util.RemindTimerUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -42,8 +43,6 @@ public class ClockScreen extends Screen {
     private ForgeSlider sliderRedBackground, sliderGreenBackground, sliderBlueBackground, sliderAlphaBackground, sliderRGBBackground;
     private final Screen lastScreen;
     private Button formatHourButton;
-    private double waveCounterText;
-    private double waveCounterBackground;
     private Button buttonWaveDirection;
     private Button buttonWaveDirectionBackground;
 
@@ -76,7 +75,7 @@ public class ClockScreen extends Screen {
                 .build();
 
         Button displayMode = Button.builder(Component.translatable("text.display_position"), pButton -> {
-                    minecraft.setScreen(new ClockPositionScreen());
+                    minecraft.setScreen(new ClockPositionScreen(this));
                 }).bounds(0,0, 154, 20)
                 .build();
 
@@ -158,7 +157,7 @@ public class ClockScreen extends Screen {
                 int rgb = (sliderRedText.getValueInt() << 16 | sliderGreenText.getValueInt() << 8 | sliderBlueText.getValueInt());
 
                 int col1 = rgb | 0xff000000;
-                drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xff00ffff, col1 | 0x00ff0000, col1 & 0xff00ffff,
+                RemindTimerUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xff00ffff, col1 | 0x00ff0000, col1 & 0xff00ffff,
                         col1 | 0x00ff0000);
 
                 guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
@@ -187,7 +186,7 @@ public class ClockScreen extends Screen {
                 int rgb = (sliderRedText.getValueInt() << 16 | sliderGreenText.getValueInt() << 8 | sliderBlueText.getValueInt());
 
                 int col1 = rgb | 0xff000000;
-                drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xffff00ff, col1 | 0x0000ff00, col1 & 0xffff00ff,
+                RemindTimerUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xffff00ff, col1 | 0x0000ff00, col1 & 0xffff00ff,
                         col1 | 0x0000ff00);
 
                 guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
@@ -215,7 +214,7 @@ public class ClockScreen extends Screen {
                 int rgb = (sliderRedText.getValueInt() << 16 | sliderGreenText.getValueInt() << 8 | sliderBlueText.getValueInt());
 
                 int col1 = rgb | 0xff000000;
-                drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xffffff00, col1 | 0x000000ff, col1 & 0xffffff00,
+                RemindTimerUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xffffff00, col1 | 0x000000ff, col1 & 0xffffff00,
                         col1 | 0x000000ff);
 
 
@@ -249,7 +248,7 @@ public class ClockScreen extends Screen {
                 RenderSystem.setShaderColor(1,1,1,1);
                 guiGraphics.blit(new ResourceLocation(RemindTimerHUD.MODID, "textures/transparency.png"), getX() + 1, getY() + 1, 0, 0F, 0F, getWidth() - 2, getHeight() - 2,  10,10);
 
-                drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,rgb |  (0x46 << 24), rgb | (0xFF << 24), rgb | (0x46 << 24), rgb | (0xFF << 24));
+                RemindTimerUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,rgb |  (0x46 << 24), rgb | (0xFF << 24), rgb | (0x46 << 24), rgb | (0xFF << 24));
                 RenderSystem.setShaderColor(1,1,1,1);
 
                 guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
@@ -303,7 +302,7 @@ public class ClockScreen extends Screen {
                 int rgb = (sliderRedBackground.getValueInt() << 16 | sliderGreenBackground.getValueInt() << 8 | sliderBlueBackground.getValueInt());
 
                 int col1 = rgb | 0xff000000;
-                drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xff00ffff, col1 | 0x00ff0000, col1 & 0xff00ffff,
+                RemindTimerUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xff00ffff, col1 | 0x00ff0000, col1 & 0xff00ffff,
                         col1 | 0x00ff0000);
 
                 guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
@@ -331,7 +330,7 @@ public class ClockScreen extends Screen {
                 int rgb = (sliderRedBackground.getValueInt() << 16 | sliderGreenBackground.getValueInt() << 8 | sliderBlueBackground.getValueInt());
 
                 int col1 = rgb | 0xff000000;
-                drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xffff00ff, col1 | 0x0000ff00, col1 & 0xffff00ff,
+                RemindTimerUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xffff00ff, col1 | 0x0000ff00, col1 & 0xffff00ff,
                         col1 | 0x0000ff00);
 
                 guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
@@ -359,7 +358,7 @@ public class ClockScreen extends Screen {
                 int rgb = (sliderRedBackground.getValueInt() << 16 | sliderGreenBackground.getValueInt() << 8 | sliderBlueBackground.getValueInt());
 
                 int col1 = rgb | 0xff000000;
-                drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xffffff00, col1 | 0x000000ff, col1 & 0xffffff00,
+                RemindTimerUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xffffff00, col1 | 0x000000ff, col1 & 0xffffff00,
                         col1 | 0x000000ff);
 
 
@@ -392,7 +391,7 @@ public class ClockScreen extends Screen {
                 RenderSystem.setShaderColor(1,1,1,1);
                 guiGraphics.blit(new ResourceLocation(RemindTimerHUD.MODID, "textures/transparency.png"), getX() + 1, getY() + 1, 0, 0F, 0F, getWidth() - 2, getHeight() - 2,  10,10);
 
-                drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,rgb |  (0x46 << 24), rgb | (0xFF << 24), rgb | (0x46 << 24), rgb | (0xFF << 24));
+                RemindTimerUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,rgb |  (0x46 << 24), rgb | (0xFF << 24), rgb | (0x46 << 24), rgb | (0xFF << 24));
                 RenderSystem.setShaderColor(1,1,1,1);
 
                 guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
@@ -475,7 +474,7 @@ public class ClockScreen extends Screen {
 
         FrameLayout.alignInRectangle(gridlayout, 0, 0, this.width, this.height, 0.5F, 0.5F);
 
-        InformationButton informationButton = new InformationButton(dateBox.getX() - 25, dateBox.getY(), 20,20, Component.translatable(""), p_93751_ -> {
+        InformationButton informationButton = new InformationButton(dateBox.getX() - 25, dateBox.getY(), 20,20, Component.empty(), p_93751_ -> {
 
         }, Supplier::get);
 
@@ -493,8 +492,6 @@ public class ClockScreen extends Screen {
     @Override
     public void tick() {
         dateBox.tick();
-        waveCounterText+=(sliderRGBText.getValue() - 1) / (100 - 1) * (10 - 1) + 1;
-        waveCounterBackground+=(sliderRGBBackground.getValue() - 1) / (100 - 1) * (20 - 1) + 1;
         super.tick();
     }
 
@@ -510,110 +507,11 @@ public class ClockScreen extends Screen {
 
         graphics.drawCenteredString(this.font, this.title, this.width / 2, 3, 16777215);
 
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-
 
         int x = width / 2 - font.width(dateFormatted) / 2;
         int y = dateBox.getY() - 20;
 
-        double rectX = width / 2f - font.width(dateFormatted) / 2f - 2;
-        double rectY = y - 2;
-        double rectWidth = font.width(dateFormatted) + 3;
-        double rectHeight = 12;
-
-
-        if(clock.isDrawBackground()) {
-            if (clock.getRgbModeBackground() == HUDMode.WAVE) {
-                for (int i = 0; i < rectWidth; i++) {
-                    double hueStart = 1.0F - ((i - waveCounterBackground) / 360f); // Inversion de la couleur
-
-                    double hueEnd = 1.0F - ((i + 1 - waveCounterBackground) / 360f); // Inversion de la couleur
-
-                    if (clock.isBackgroundRightToLeftDirection()) {
-                        hueStart = (i + waveCounterBackground) / 360f; // Inversion de la couleur
-                        hueEnd = (i + 4 + waveCounterBackground) / 360f; // Inversion de la couleur
-
-                    }
-
-                    int colorStart = Color.HSBtoRGB((float) hueStart, 1.0F, 1.0F);
-                    int colorEnd = Color.HSBtoRGB((float) hueEnd, 1.0F, 1.0F);
-
-                    colorStart = (colorStart & 0x00FFFFFF) | (sliderAlphaBackground.getValueInt() << 24);
-
-                    colorEnd = (colorEnd & 0x00FFFFFF) | (sliderAlphaBackground.getValueInt() << 24);
-
-                    // Dessiner une colonne du rectangle avec le dégradé de couleur
-                    drawGradientRect((rectX + i), rectY, rectX + i + 1, rectY + rectHeight, 0, colorStart, colorEnd, colorStart, colorEnd);
-                }
-            } else if (clock.getRgbModeBackground() == HUDMode.CYCLE) {
-
-                float hueStart = 1.0F - ((float) (waveCounterBackground) / 360f); // Inversion de la couleur
-
-                if (clock.isBackgroundRightToLeftDirection()) {
-                    hueStart = (float) (waveCounterBackground) / 360f; // Inversion de la couleur
-                }
-
-                float hueEnd = hueStart; // Utilisez la même couleur pour le coin opposé
-
-                int colorStart = Color.HSBtoRGB(hueStart, 1.0F, 1.0F);
-                int colorEnd = Color.HSBtoRGB(hueEnd, 1.0F, 1.0F);
-
-
-                colorStart = (colorStart & 0x00FFFFFF) | (sliderAlphaBackground.getValueInt() << 24);
-
-                colorEnd = (colorEnd & 0x00FFFFFF) | (sliderAlphaBackground.getValueInt() << 24);
-                // Dessiner une colonne du rectangle avec le dégradé de couleur
-                drawGradientRect(rectX, rectY, rectX + rectWidth, rectY + rectHeight, 0, colorStart, colorStart, colorEnd, colorEnd);
-            } else {
-                int colorBackground = (sliderAlphaBackground.getValueInt() << 24 | sliderRedBackground.getValueInt() << 16 | sliderGreenBackground.getValueInt() << 8 | sliderBlueBackground.getValueInt());
-                graphics.fill(width / 2 - font.width(dateFormatted) / 2 - 2, y - 2, width / 2 + font.width(dateFormatted) / 2 + 2, y + 8 + 2, colorBackground);
-            }
-
-        }
-
-
-        if(clock.getRgbModeText() == HUDMode.WAVE) {
-            for (int i = 0; i < dateFormatted.length(); i++) {
-                char c = dateFormatted.charAt(i);
-
-                double hue = 1.0F - ((float) (dateFormatted.length() - i + waveCounterText) * 2 / 360f); // Inversion de la couleur
-
-                if (clock.isTextRightToLeftDirection())
-                    hue = (dateFormatted.length() + i + waveCounterText) * 2 / 360; // Inversion de la couleur
-
-                float saturation = 1.0F;
-                float brightness = 1.0F;
-
-                int color = Color.HSBtoRGB((float) hue, saturation, brightness);
-
-                color = (color & 0x00FFFFFF) | (sliderAlphaText.getValueInt() << 24);
-
-                graphics.drawString(font, String.valueOf(c), x, y, color, false);
-                x += minecraft.font.width(String.valueOf(c));
-
-            }
-        } else if (clock.getRgbModeText() == HUDMode.CYCLE) {
-
-        float hueStart = 1.0F - ((float) (waveCounterText) / 255); // Inversion de la couleur
-
-            if (clock.isTextRightToLeftDirection()) {
-                hueStart = (float) (waveCounterText) / 255; // Inversion de la couleur
-            }
-
-
-            int color = Color.HSBtoRGB(hueStart, 1.0F, 1.0F);
-
-            color = (color & 0x00FFFFFF) | (sliderAlphaText.getValueInt() << 24);
-
-            graphics.drawString(font, dateFormatted, x, y, color, false);
-
-        } else {
-            int colorText = (sliderAlphaText.getValueInt() << 24 | sliderRedText.getValueInt() << 16 | sliderGreenText.getValueInt() << 8 | sliderBlueText.getValueInt());
-
-            graphics.drawString(font, dateFormatted, x, y, colorText, false);
-        }
+        RemindTimerUtil.renderClock(clock, graphics, font, x, y, width, height);
     }
 
     @Override
@@ -661,31 +559,5 @@ public class ClockScreen extends Screen {
 
         configClock.textRightToLeftDirection.set(clock.isTextRightToLeftDirection());
         configClock.backgroundRightToLeftDirection.set(clock.isBackgroundRightToLeftDirection());
-    }
-
-    private void drawGradientRect(double left, double top, double right, double bottom, int z, int coltl, int coltr, int colbl,
-                                  int colbr) {
-
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-
-        Tesselator tesselator = Tesselator.getInstance();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder buffer = tessellator.getBuilder();
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-
-
-        buffer.vertex(right, top, z).color((coltr & 0x00ff0000) >> 16, (coltr & 0x0000ff00) >> 8,
-                (coltr & 0x000000ff), (coltr & 0xff000000) >>> 24).endVertex();
-        buffer.vertex(left, top, z).color((coltl & 0x00ff0000) >> 16, (coltl & 0x0000ff00) >> 8, (coltl & 0x000000ff),
-                (coltl & 0xff000000) >>> 24).endVertex();
-        buffer.vertex(left, bottom, z).color((colbl & 0x00ff0000) >> 16, (colbl & 0x0000ff00) >> 8,
-                (colbl & 0x000000ff), (colbl & 0xff000000) >>> 24).endVertex();
-        buffer.vertex(right, bottom, z).color((colbr & 0x00ff0000) >> 16, (colbr & 0x0000ff00) >> 8,
-                (colbr & 0x000000ff), (colbr & 0xff000000) >>> 24).endVertex();
-        tesselator.end();
-        RenderSystem.disableBlend();
     }
 }

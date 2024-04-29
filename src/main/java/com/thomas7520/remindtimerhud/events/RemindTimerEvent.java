@@ -23,7 +23,6 @@ import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
@@ -60,7 +59,6 @@ public class RemindTimerEvent {
         if(RemindTimerUtil.resetChronometerBind.isDown()) {
             Chronometer chronometer = RemindTimerHUD.getChronometer();
 
-            System.out.println(chronometer.isEnable() + " - " + chronometer.isStarted() + " - " + chronometer.isPaused());
             if(!chronometer.isEnable() || !chronometer.isStarted() || !chronometer.isPaused()) return;
 
             chronometer.reset();
@@ -92,12 +90,30 @@ public class RemindTimerEvent {
 
 
         if (Minecraft.getInstance().player != null) {
-            waveCounterText += (RemindTimerHUD.getClock().getRgbSpeedText() - 1) / (100 - 1) * (10 - 1) + 1;
-            waveCounterBackground += (RemindTimerHUD.getClock().getRgbSpeedBackground() - 1) / (100 - 1) * (20 - 1) + 1;
+
+            if(RemindTimerHUD.getClock().isEnable()) {
+                if (RemindTimerHUD.getClock().getRgbModeText() != HUDMode.STATIC) {
+                    RemindTimerUtil.waveCounterClockText += (RemindTimerHUD.getClock().getRgbSpeedText() - 1) / (100 - 1f) * (10 - 1) + 1;
+                }
+
+                if (RemindTimerHUD.getClock().isDrawBackground() && RemindTimerHUD.getClock().getRgbModeBackground() != HUDMode.STATIC) {
+                    RemindTimerUtil.waveCounterClockBackground += (RemindTimerHUD.getClock().getRgbSpeedBackground() - 1) / (100 - 1f) * (20 - 1) + 1;
+                }
+            }
+
+            if(RemindTimerHUD.getChronometer().isEnable()) {
+
+                if (RemindTimerHUD.getChronometer().getRgbModeText() != HUDMode.STATIC) {
+                    RemindTimerUtil.waveCounterChronometerText += (RemindTimerHUD.getChronometer().getRgbSpeedText() - 1) / (100 - 1f) * (10 - 1) + 1;
+                }
+
+                if (RemindTimerHUD.getChronometer().isDrawBackground() && RemindTimerHUD.getChronometer().getRgbModeBackground() != HUDMode.STATIC) {
+                    RemindTimerUtil.waveCounterChronometerBackground += (RemindTimerHUD.getChronometer().getRgbSpeedBackground() - 1) / (100 - 1f) * (10 - 1) + 1;
+                }
+            }
         }
     }
-    private static int waveCounterBackground;
-    private static int waveCounterText;
+
     @SubscribeEvent
     public static void hudEvent(RenderGuiOverlayEvent.Post event) {
 
@@ -114,282 +130,37 @@ public class RemindTimerEvent {
 //        //RemindTimerUtil.circleDoubleProgress(event.getGuievent.getGuiGraphics()().guiWidth() / 2, event.getGuievent.getGuiGraphics()().guiHeight() / 2, 10F, 6F, 180, 180F, 64, new Color(91, 13, 13, 200));
 
 
-        RenderSystem.enableBlend();
-        RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-
-
         Clock clock = RemindTimerHUD.getClock();
 
         int width = event.getGuiGraphics().guiWidth();
         int height = event.getGuiGraphics().guiHeight();
 
         Font font = Minecraft.getInstance().font;
-        String dateFormatted = clock.getDateFormatted();
 
         float x = (float) (clock.getPosX() / 100.0 * event.getWindow().getGuiScaledWidth());
         float y = (float) (clock.getPosY() / 100.0 * event.getWindow().getGuiScaledHeight());
 
-        int rectWidth = font.width(dateFormatted) + 3;
-        int rectHeight = 12;
-
-        x = Math.max(0, x);
-        x = Math.min(width - rectWidth, x);
-
-        y = Math.max(y, 2);
-        y = Math.min(y, height - rectHeight);
-
-        int textX = 2;
-        int textY = 2;
-
-        event.getGuiGraphics().pose().pushPose();
-        event.getGuiGraphics().pose().translate(x,y, 0);
-
-
-        if(clock.isDrawBackground()) {
-            if (clock.getRgbModeBackground() == HUDMode.WAVE) {
-                for (int i = 0; i < rectWidth; i++) {
-                    float hueStart = 1.0F - ((i - waveCounterBackground) / 360f); // Inversion de la couleur
-
-                    float hueEnd = 1.0F - ((i + 1 - waveCounterBackground) / 360f); // Inversion de la couleur
-
-                    if (clock.isBackgroundRightToLeftDirection()) {
-                        hueStart = (i + waveCounterBackground) / 360f; // Inversion de la couleur
-                        hueEnd = (i + 4 + waveCounterBackground) / 360f; // Inversion de la couleur
-
-                    }
-
-                    int colorStart = Color.HSBtoRGB(hueStart, 1.0F, 1.0F);
-                    int colorEnd = Color.HSBtoRGB(hueEnd, 1.0F, 1.0F);
-
-                    colorStart = (colorStart & 0x00FFFFFF) | (clock.getAlphaBackground() << 24);
-
-                    colorEnd = (colorEnd & 0x00FFFFFF) | (clock.getAlphaBackground() << 24);
-
-                    // Dessiner une colonne du rectangle avec le dégradé de couleur
-                    drawGradientRect(x+i, y, i + 1, y+rectHeight, 0, colorStart, colorEnd, colorStart, colorEnd);
-                }
-            } else if (clock.getRgbModeBackground() == HUDMode.CYCLE) {
-
-                float hueStart = 1.0F - ((float) (waveCounterBackground) / 360f); // Inversion de la couleur
-
-                if (clock.isBackgroundRightToLeftDirection()) {
-                    hueStart = (float) (waveCounterBackground) / 360f; // Inversion de la couleur
-                }
-
-                float hueEnd = hueStart; // Utilisez la même couleur pour le coin opposé
-
-                int colorStart = Color.HSBtoRGB(hueStart, 1.0F, 1.0F);
-                int colorEnd = Color.HSBtoRGB(hueEnd, 1.0F, 1.0F);
-
-
-                colorStart = (colorStart & 0x00FFFFFF) | (clock.getAlphaBackground() << 24);
-
-                colorEnd = (colorEnd & 0x00FFFFFF) | (clock.getAlphaBackground() << 24);
-                // Dessiner une colonne du rectangle avec le dégradé de couleur
-                drawGradientRect(x, y, x+rectWidth, y+rectHeight, 0, colorStart, colorStart, colorEnd, colorEnd);
-            } else {
-                int colorBackground = (clock.getAlphaBackground() << 24 | clock.getRedBackground() << 16 | clock.getGreenBackground() << 8 | clock.getBlueBackground());
-
-                event.getGuiGraphics().fill(0, -2, rectWidth, 8 + 4, colorBackground);
-            }
-
+        if(clock.isEnable()) {
+            RemindTimerUtil.renderClock(clock, event.getGuiGraphics(), font, x, y, width, height);
         }
-
-
-        if(clock.getRgbModeText() == HUDMode.WAVE) {
-            int textCharX = textX;
-
-            for (int i = 0; i < dateFormatted.length(); i++) {
-                char c = dateFormatted.charAt(i);
-
-                int color = getColor(dateFormatted, i);
-
-                event.getGuiGraphics().drawString(font, String.valueOf(c), textCharX, textY, color, false);
-                textCharX += font.width(String.valueOf(c));
-            }
-        } else if (clock.getRgbModeText() == HUDMode.CYCLE) {
-
-            float hueStart = 1.0F - ((float) (waveCounterText) / 255); // Inversion de la couleur
-
-            if (clock.isTextRightToLeftDirection()) {
-                hueStart = (float) ( waveCounterText) / 255; // Inversion de la couleur
-            }
-
-            int color = Color.HSBtoRGB(hueStart, 1.0F, 1.0F);
-
-            color = (color & 0x00FFFFFF) | (clock.getAlphaText() << 24);
-
-            event.getGuiGraphics().drawString(font, dateFormatted, textX, textY, color, false);
-
-        } else {
-            int colorText = (clock.getAlphaText() << 24 | clock.getRedText() << 16 | clock.getGreenText() << 8 | clock.getBlueText());
-
-            event.getGuiGraphics().drawString(font, dateFormatted, textX, textY, colorText, false);
-        }
-
-
-        event.getGuiGraphics().pose().popPose();
 
         Chronometer chronometer = RemindTimerHUD.getChronometer();
 
-        if(!chronometer.isEnable() || (!chronometer.isStarted() && !chronometer.isIdleRender())) return;
+        if(chronometer.isEnable() && (chronometer.isStarted() || chronometer.isIdleRender())) {
+
+            String chronometerFormatted = chronometer.getFormat().formatTime(chronometer.getStartTime());
 
 
-        String chronometerFormatted = chronometer.getFormat().formatTime(chronometer.getStartTime());
+            if (chronometer.isPaused()) chronometerFormatted = chronometer.getPauseTimeCache();
 
 
-        if(chronometer.isPaused()) chronometerFormatted = chronometer.getPauseTimeCache();
+            if (!chronometer.isStarted() && chronometer.isIdleRender())
+                chronometerFormatted = chronometer.getFormat().formatTime(System.currentTimeMillis());
 
+            x = (float) (chronometer.getPosX() / 100.0 * event.getWindow().getGuiScaledWidth());
+            y = (float) (chronometer.getPosY() / 100.0 * event.getWindow().getGuiScaledHeight());
 
-        if(!chronometer.isStarted() && chronometer.isIdleRender()) chronometerFormatted = chronometer.getFormat().formatTime(System.currentTimeMillis());
-
-        x = (float) (chronometer.getPosX() / 100.0 * event.getWindow().getGuiScaledWidth());
-        y = (float) (chronometer.getPosY() / 100.0 * event.getWindow().getGuiScaledHeight());
-
-        rectWidth = font.width(chronometerFormatted) + 3;
-
-        x = Math.max(0, x);
-        x = Math.min(width - rectWidth, x);
-
-        y = Math.max(y, 2);
-        y = Math.min(y, height - rectHeight);
-
-
-        event.getGuiGraphics().pose().pushPose();
-        event.getGuiGraphics().pose().translate(x,y, 0);
-
-
-        if(chronometer.isDrawBackground()) {
-            if (chronometer.getRgbModeBackground() == HUDMode.WAVE) {
-                for (int i = 0; i < rectWidth; i++) {
-                    float hueStart = 1.0F - ((i - waveCounterBackground) / 360f); // Inversion de la couleur
-
-                    float hueEnd = 1.0F - ((i + 1 - waveCounterBackground) / 360f); // Inversion de la couleur
-
-                    if (chronometer.isBackgroundRightToLeftDirection()) {
-                        hueStart = (i + waveCounterBackground) / 360f; // Inversion de la couleur
-                        hueEnd = (i + 4 + waveCounterBackground) / 360f; // Inversion de la couleur
-
-                    }
-
-                    int colorStart = Color.HSBtoRGB(hueStart, 1.0F, 1.0F);
-                    int colorEnd = Color.HSBtoRGB(hueEnd, 1.0F, 1.0F);
-
-                    colorStart = (colorStart & 0x00FFFFFF) | (chronometer.getAlphaBackground() << 24);
-
-                    colorEnd = (colorEnd & 0x00FFFFFF) | (chronometer.getAlphaBackground() << 24);
-
-                    // Dessiner une colonne du rectangle avec le dégradé de couleur
-                    drawGradientRect(x+i, y, i + 1, y+rectHeight, 0, colorStart, colorEnd, colorStart, colorEnd);
-                }
-            } else if (chronometer.getRgbModeBackground() == HUDMode.CYCLE) {
-
-                float hueStart = 1.0F - ((float) (waveCounterBackground) / 360f); // Inversion de la couleur
-
-                if (chronometer.isBackgroundRightToLeftDirection()) {
-                    hueStart = (float) (waveCounterBackground) / 360f; // Inversion de la couleur
-                }
-
-                float hueEnd = hueStart; // Utilisez la même couleur pour le coin opposé
-
-                int colorStart = Color.HSBtoRGB(hueStart, 1.0F, 1.0F);
-                int colorEnd = Color.HSBtoRGB(hueEnd, 1.0F, 1.0F);
-
-
-                colorStart = (colorStart & 0x00FFFFFF) | (chronometer.getAlphaBackground() << 24);
-
-                colorEnd = (colorEnd & 0x00FFFFFF) | (chronometer.getAlphaBackground() << 24);
-                // Dessiner une colonne du rectangle avec le dégradé de couleur
-                drawGradientRect(x, y, x+rectWidth, y+rectHeight, 0, colorStart, colorStart, colorEnd, colorEnd);
-            } else {
-                int colorBackground = (chronometer.getAlphaBackground() << 24 | chronometer.getRedBackground() << 16 | chronometer.getGreenBackground() << 8 | chronometer.getBlueBackground());
-
-                event.getGuiGraphics().fill(0, -2, rectWidth, 8 + 4, colorBackground);
-            }
+            RemindTimerUtil.drawChronometer(chronometer, chronometerFormatted, event.getGuiGraphics(), font, x, y, width, height);
         }
-
-
-        if(chronometer.getRgbModeText() == HUDMode.WAVE) {
-            int textCharX = textX;
-
-            for (int i = 0; i < chronometerFormatted.length(); i++) {
-                char c = chronometerFormatted.charAt(i);
-
-                int color = getColor(chronometerFormatted, i);
-
-                event.getGuiGraphics().drawString(font, String.valueOf(c), textCharX, textY, color, false);
-                textCharX += font.width(String.valueOf(c));
-            }
-        } else if (chronometer.getRgbModeText() == HUDMode.CYCLE) {
-
-            float hueStart = 1.0F - ((float) (waveCounterText) / 255); // Inversion de la couleur
-
-            if (chronometer.isTextRightToLeftDirection()) {
-                hueStart = (float) ( waveCounterText) / 255; // Inversion de la couleur
-            }
-
-
-            int color = Color.HSBtoRGB(hueStart, 1.0F, 1.0F);
-
-            color = (color & 0x00FFFFFF) | (chronometer.getAlphaText() << 24);
-
-            event.getGuiGraphics().drawString(font, chronometerFormatted, textX, textY, color, false);
-
-        } else {
-            int colorText = (chronometer.getAlphaText() << 24 | chronometer.getRedText() << 16 | chronometer.getGreenText() << 8 | chronometer.getBlueText());
-
-            event.getGuiGraphics().drawString(font, chronometerFormatted, textX, textY, colorText, false);
-        }
-
-        event.getGuiGraphics().setColor(1,1,1,1);
-        event.getGuiGraphics().pose().popPose();
-
-
-        RenderSystem.disableBlend();
-
-        // TODO Sync waveCounterText & waveCounterBackground on every gui, and create function renderChronometer & renderClock, ...
-
-    }
-
-    private static void drawGradientRect(double left, double top, double right, double bottom, int z, int coltl, int coltr, int colbl,
-                                         int colbr) {
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.enableDepthTest();
-
-        Tesselator tesselator = Tesselator.getInstance();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder buffer = tessellator.getBuilder();
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-
-
-        buffer.vertex(right, top, z).color((coltr & 0x00ff0000) >> 16, (coltr & 0x0000ff00) >> 8,
-                (coltr & 0x000000ff), (coltr & 0xff000000) >>> 24).endVertex();
-        buffer.vertex(left, top, z).color((coltl & 0x00ff0000) >> 16, (coltl & 0x0000ff00) >> 8, (coltl & 0x000000ff),
-                (coltl & 0xff000000) >>> 24).endVertex();
-        buffer.vertex(left, bottom, z).color((colbl & 0x00ff0000) >> 16, (colbl & 0x0000ff00) >> 8,
-                (colbl & 0x000000ff), (colbl & 0xff000000) >>> 24).endVertex();
-        buffer.vertex(right, bottom, z).color((colbr & 0x00ff0000) >> 16, (colbr & 0x0000ff00) >> 8,
-                (colbr & 0x000000ff), (colbr & 0xff000000) >>> 24).endVertex();
-        tesselator.end();
-        RenderSystem.disableBlend();
-    }
-
-    private static int getColor(String dateFormatted, int i) {
-        float hue = 1.0F - ((float) (dateFormatted.length() - i + waveCounterText) * 2 / 360f); // Inversion de la couleur
-
-        if (RemindTimerHUD.getClock().isTextRightToLeftDirection())
-            hue = (float) (dateFormatted.length() + i + waveCounterText) * 2 / 360f; // Inversion de la couleur
-
-        float saturation = 1.0F;
-        float brightness = 1.0F;
-
-        int color = Color.HSBtoRGB(hue, saturation, brightness);
-
-        color = (color & 0x00FFFFFF) | (RemindTimerHUD.getClock().getAlphaText() << 24);
-        return color;
     }
 }
