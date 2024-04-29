@@ -65,7 +65,8 @@ public class ChronometerPositionScreen extends Screen {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float p_282465_) {
-        renderBackground(graphics);
+        renderBackground(graphics, mouseX, mouseY, p_282465_);
+
         super.render(graphics, mouseX, mouseY, p_282465_);
 
         if (clicked) {

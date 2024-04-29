@@ -150,7 +150,7 @@ public class ClockScreen extends Screen {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 final Minecraft mc = Minecraft.getInstance();
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX(), this.getY(), 0, getTextureY(), this.width, this.height, 200, 20, 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293389_(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
                 int rgb = (sliderRedText.getValueInt() << 16 | sliderGreenText.getValueInt() << 8 | sliderBlueText.getValueInt());
 
@@ -158,7 +158,7 @@ public class ClockScreen extends Screen {
                 RemindClockUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xff00ffff, col1 | 0x00ff0000, col1 & 0xff00ffff,
                         col1 | 0x00ff0000);
 
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293290_(), this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, this.getHeight());
 
                 renderScrollingString(guiGraphics, mc.font, 2, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
             }
@@ -179,7 +179,7 @@ public class ClockScreen extends Screen {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 final Minecraft mc = Minecraft.getInstance();
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX(), this.getY(), 0, getTextureY(), this.width, this.height, 200, 20, 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293389_(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
                 int rgb = (sliderRedText.getValueInt() << 16 | sliderGreenText.getValueInt() << 8 | sliderBlueText.getValueInt());
 
@@ -187,7 +187,7 @@ public class ClockScreen extends Screen {
                 RemindClockUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xffff00ff, col1 | 0x0000ff00, col1 & 0xffff00ff,
                         col1 | 0x0000ff00);
 
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293290_(), this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, this.getHeight());
 
                 renderScrollingString(guiGraphics, mc.font, 2, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
             }
@@ -207,7 +207,7 @@ public class ClockScreen extends Screen {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 final Minecraft mc = Minecraft.getInstance();
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX(), this.getY(), 0, getTextureY(), this.width, this.height, 200, 20, 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293389_(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
                 int rgb = (sliderRedText.getValueInt() << 16 | sliderGreenText.getValueInt() << 8 | sliderBlueText.getValueInt());
 
@@ -216,7 +216,7 @@ public class ClockScreen extends Screen {
                         col1 | 0x000000ff);
 
 
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293290_(), this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, this.getHeight());
 
                 renderScrollingString(guiGraphics, mc.font, 2, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
             }
@@ -237,7 +237,7 @@ public class ClockScreen extends Screen {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 final Minecraft mc = Minecraft.getInstance();
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX(), this.getY(), 0, getTextureY(), this.width, this.height, 200, 20, 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293389_(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
                 int rgb = (sliderRedText.getValueInt() << 16 | sliderGreenText.getValueInt() << 8 | sliderBlueText.getValueInt());
 
@@ -247,7 +247,7 @@ public class ClockScreen extends Screen {
                 RemindClockUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0, rgb | (0x46 << 24), rgb | (0xFF << 24), rgb | (0x46 << 24), rgb | (0xFF << 24));
                 RenderSystem.setShaderColor(1, 1, 1, 1);
 
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20, 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293290_(), this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, this.getHeight());
 
                 renderScrollingString(guiGraphics, mc.font, 2, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
             }
@@ -293,7 +293,7 @@ public class ClockScreen extends Screen {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 final Minecraft mc = Minecraft.getInstance();
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX(), this.getY(), 0, getTextureY(), this.width, this.height, 200, 20, 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293389_(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
                 int rgb = (sliderRedBackground.getValueInt() << 16 | sliderGreenBackground.getValueInt() << 8 | sliderBlueBackground.getValueInt());
 
@@ -301,7 +301,7 @@ public class ClockScreen extends Screen {
                 RemindClockUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xff00ffff, col1 | 0x00ff0000, col1 & 0xff00ffff,
                         col1 | 0x00ff0000);
 
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293290_(), this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, this.getHeight());
 
                 renderScrollingString(guiGraphics, mc.font, 2, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
             }
@@ -321,7 +321,7 @@ public class ClockScreen extends Screen {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 final Minecraft mc = Minecraft.getInstance();
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX(), this.getY(), 0, getTextureY(), this.width, this.height, 200, 20, 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293389_(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
                 int rgb = (sliderRedBackground.getValueInt() << 16 | sliderGreenBackground.getValueInt() << 8 | sliderBlueBackground.getValueInt());
 
@@ -329,7 +329,7 @@ public class ClockScreen extends Screen {
                 RemindClockUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xffff00ff, col1 | 0x0000ff00, col1 & 0xffff00ff,
                         col1 | 0x0000ff00);
 
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293290_(), this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, this.getHeight());
 
                 renderScrollingString(guiGraphics, mc.font, 2, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
             }
@@ -349,7 +349,7 @@ public class ClockScreen extends Screen {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 final Minecraft mc = Minecraft.getInstance();
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX(), this.getY(), 0, getTextureY(), this.width, this.height, 200, 20, 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293389_(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
                 int rgb = (sliderRedBackground.getValueInt() << 16 | sliderGreenBackground.getValueInt() << 8 | sliderBlueBackground.getValueInt());
 
@@ -358,7 +358,7 @@ public class ClockScreen extends Screen {
                         col1 | 0x000000ff);
 
 
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293290_(), this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, this.getHeight());
 
                 renderScrollingString(guiGraphics, mc.font, 2, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
             }
@@ -379,7 +379,7 @@ public class ClockScreen extends Screen {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 final Minecraft mc = Minecraft.getInstance();
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX(), this.getY(), 0, getTextureY(), this.width, this.height, 200, 20, 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293389_(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
                 int rgb = (sliderRedBackground.getValueInt() << 16 | sliderGreenBackground.getValueInt() << 8 | sliderBlueBackground.getValueInt());
 
@@ -389,7 +389,7 @@ public class ClockScreen extends Screen {
                 RemindClockUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0, rgb | (0x46 << 24), rgb | (0xFF << 24), rgb | (0x46 << 24), rgb | (0xFF << 24));
                 RenderSystem.setShaderColor(1, 1, 1, 1);
 
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20, 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293290_(), this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, this.getHeight());
 
                 renderScrollingString(guiGraphics, mc.font, 2, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
             }
@@ -485,15 +485,9 @@ public class ClockScreen extends Screen {
 
 
     @Override
-    public void tick() {
-        dateBox.tick();
-        super.tick();
-    }
-
-
-    @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float p_282465_) {
-        renderBackground(graphics);
+        renderBackground(graphics, mouseX, mouseY, p_282465_);
+
         super.render(graphics, mouseX, mouseY, p_282465_);
 
         String dateFormatted = clock.getDateFormatted();

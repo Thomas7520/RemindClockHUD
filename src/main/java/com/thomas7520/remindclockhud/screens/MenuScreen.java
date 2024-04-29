@@ -118,11 +118,7 @@ public class MenuScreen extends Screen {
 
     @Override
     public void render(GuiGraphics graphics, int x, int y, float p_282465_) {
-
-
-        renderBackground(graphics);
-
-
+        renderBackground(graphics, x,y, p_282465_);
 
         super.render(graphics, x, y, p_282465_);
 

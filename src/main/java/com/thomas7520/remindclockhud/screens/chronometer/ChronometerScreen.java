@@ -10,6 +10,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.VideoSettingsScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -115,6 +116,7 @@ public class ChronometerScreen extends Screen {
 
 
         int i = 1;
+        
         sliderRedText = new ForgeSlider(0,0, 100, 20, Component.literal(Component.translatable(stateValues[i-1]).getString() + " : "), Component.empty()
                 , 0, 255, chronometer.getRedText(), 1, 1, true) {
 
@@ -122,7 +124,9 @@ public class ChronometerScreen extends Screen {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 final Minecraft mc = Minecraft.getInstance();
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX(), this.getY(), 0, getTextureY(), this.width, this.height, 200, 20, 2, 3, 2, 2);
+
+
+                guiGraphics.m_292816_(this.m_293389_(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
                 int rgb = (sliderRedText.getValueInt() << 16 | sliderGreenText.getValueInt() << 8 | sliderBlueText.getValueInt());
 
@@ -130,7 +134,7 @@ public class ChronometerScreen extends Screen {
                 RemindClockUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xff00ffff, col1 | 0x00ff0000, col1 & 0xff00ffff,
                         col1 | 0x00ff0000);
 
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293290_(), this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, this.getHeight());
 
                 renderScrollingString(guiGraphics, mc.font, 2, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
             }
@@ -151,7 +155,7 @@ public class ChronometerScreen extends Screen {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 final Minecraft mc = Minecraft.getInstance();
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX(), this.getY(), 0, getTextureY(), this.width, this.height, 200, 20, 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293389_(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
                 int rgb = (sliderRedText.getValueInt() << 16 | sliderGreenText.getValueInt() << 8 | sliderBlueText.getValueInt());
 
@@ -159,7 +163,7 @@ public class ChronometerScreen extends Screen {
                 RemindClockUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xffff00ff, col1 | 0x0000ff00, col1 & 0xffff00ff,
                         col1 | 0x0000ff00);
 
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293290_(), this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, this.getHeight());
 
                 renderScrollingString(guiGraphics, mc.font, 2, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
             }
@@ -179,7 +183,7 @@ public class ChronometerScreen extends Screen {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 final Minecraft mc = Minecraft.getInstance();
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX(), this.getY(), 0, getTextureY(), this.width, this.height, 200, 20, 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293389_(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
                 int rgb = (sliderRedText.getValueInt() << 16 | sliderGreenText.getValueInt() << 8 | sliderBlueText.getValueInt());
 
@@ -188,7 +192,7 @@ public class ChronometerScreen extends Screen {
                         col1 | 0x000000ff);
 
 
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293290_(), this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, this.getHeight());
 
                 renderScrollingString(guiGraphics, mc.font, 2, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
             }
@@ -208,7 +212,7 @@ public class ChronometerScreen extends Screen {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 final Minecraft mc = Minecraft.getInstance();
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX(), this.getY(), 0, getTextureY(), this.width, this.height, 200, 20, 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293389_(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
                 int rgb = (sliderRedText.getValueInt() << 16 | sliderGreenText.getValueInt() << 8 | sliderBlueText.getValueInt());
 
@@ -218,7 +222,7 @@ public class ChronometerScreen extends Screen {
                 RemindClockUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0, rgb | (0x46 << 24), rgb | (0xFF << 24), rgb | (0x46 << 24), rgb | (0xFF << 24));
                 RenderSystem.setShaderColor(1, 1, 1, 1);
 
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20, 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293290_(), this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, this.getHeight());
 
                 renderScrollingString(guiGraphics, mc.font, 2, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
             }
@@ -261,7 +265,7 @@ public class ChronometerScreen extends Screen {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 final Minecraft mc = Minecraft.getInstance();
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX(), this.getY(), 0, getTextureY(), this.width, this.height, 200, 20, 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293389_(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
                 int rgb = (sliderRedBackground.getValueInt() << 16 | sliderGreenBackground.getValueInt() << 8 | sliderBlueBackground.getValueInt());
 
@@ -269,7 +273,7 @@ public class ChronometerScreen extends Screen {
                 RemindClockUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xff00ffff, col1 | 0x00ff0000, col1 & 0xff00ffff,
                         col1 | 0x00ff0000);
 
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293290_(), this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, this.getHeight());
 
                 renderScrollingString(guiGraphics, mc.font, 2, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
             }
@@ -289,7 +293,7 @@ public class ChronometerScreen extends Screen {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 final Minecraft mc = Minecraft.getInstance();
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX(), this.getY(), 0, getTextureY(), this.width, this.height, 200, 20, 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293389_(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
                 int rgb = (sliderRedBackground.getValueInt() << 16 | sliderGreenBackground.getValueInt() << 8 | sliderBlueBackground.getValueInt());
 
@@ -297,7 +301,7 @@ public class ChronometerScreen extends Screen {
                 RemindClockUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0,col1 & 0xffff00ff, col1 | 0x0000ff00, col1 & 0xffff00ff,
                         col1 | 0x0000ff00);
 
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293290_(), this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, this.getHeight());
 
                 renderScrollingString(guiGraphics, mc.font, 2, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
             }
@@ -317,7 +321,7 @@ public class ChronometerScreen extends Screen {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 final Minecraft mc = Minecraft.getInstance();
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX(), this.getY(), 0, getTextureY(), this.width, this.height, 200, 20, 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293389_(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
                 int rgb = (sliderRedBackground.getValueInt() << 16 | sliderGreenBackground.getValueInt() << 8 | sliderBlueBackground.getValueInt());
 
@@ -326,7 +330,7 @@ public class ChronometerScreen extends Screen {
                         col1 | 0x000000ff);
 
 
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20 , 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293290_(), this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, this.getHeight());
 
                 renderScrollingString(guiGraphics, mc.font, 2, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
             }
@@ -346,7 +350,7 @@ public class ChronometerScreen extends Screen {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 final Minecraft mc = Minecraft.getInstance();
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX(), this.getY(), 0, getTextureY(), this.width, this.height, 200, 20, 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293389_(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
                 int rgb = (sliderRedBackground.getValueInt() << 16 | sliderGreenBackground.getValueInt() << 8 | sliderBlueBackground.getValueInt());
 
@@ -356,7 +360,7 @@ public class ChronometerScreen extends Screen {
                 RemindClockUtil.drawGradientRect(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, 0, rgb | (0x46 << 24), rgb | (0xFF << 24), rgb | (0x46 << 24), rgb | (0xFF << 24));
                 RenderSystem.setShaderColor(1, 1, 1, 1);
 
-                guiGraphics.blitWithBorder(SLIDER_LOCATION, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY(), 0, getHandleTextureY(), 8, this.height, 200, 20, 2, 3, 2, 2);
+                guiGraphics.m_292816_(this.m_293290_(), this.getX() + (int)(this.value * (double)(this.width - 8)), this.getY(), 8, this.getHeight());
 
                 renderScrollingString(guiGraphics, mc.font, 2, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
             }
@@ -443,7 +447,7 @@ public class ChronometerScreen extends Screen {
     }
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float p_282465_) {
-        renderBackground(guiGraphics);
+        renderBackground(guiGraphics, mouseX, mouseY, p_282465_);
         super.render(guiGraphics, mouseX, mouseY, p_282465_);
 
         String chronometerFormatted = chronometer.getFormat().formatTime(System.currentTimeMillis());
