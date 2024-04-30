@@ -13,7 +13,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import org.apache.commons.lang3.LocaleUtils;
+import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.*;
@@ -51,11 +55,10 @@ public class RemindClockUtil {
         return serverAlarms;
     }
 
-
-    public static void circleDoubleProgress(
-            int x, int y,
-            float radius, float radiusDouble,
-            float progress, float initialDegree, int segment, Color color) {
+    public static void circleProgress(
+            double x, double y, float radius, float progress,
+            float initialDegree, int segment, int color,
+            Matrix4f matrix4f, MultiBufferSource.BufferSource bufferSource, RenderType pRenderType) {
 
         float a = 360F / segment;
         float b;
@@ -63,9 +66,6 @@ public class RemindClockUtil {
         double degree, sin, cos;
         double osin = 0;
         double ocos = 0;
-
-        Tesselator tessellator = Tesselator.getInstance();
-        tessellator.getBuilder().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
         RenderSystem.enableBlend();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
@@ -78,37 +78,85 @@ public class RemindClockUtil {
             else
                 degree = (initialDegree + progress) * Math.PI / 180D;
 
+            //По часовой
             sin = Math.sin(-degree);
             cos = Math.cos(-degree);
 
+            float red = ((color >> 16) & 0xff) / 255f;
+            float green = ((color >> 8) & 0xff) / 255f;
+            float blue = ((color) & 0xff) / 255f;
+            float alpha = ((color >> 24) & 0xff) / 255f;
 
-            tessellator.getBuilder()
-                    .vertex((float) (x + (osin * radius)), (float) (y + (ocos * radius)), 0)
-                    .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
-                    .endVertex();
-
-            tessellator.getBuilder()
-                    .vertex((float) ((float)x + (osin * radiusDouble)), (float) ((float)y + (ocos * radiusDouble)), 0)
-                    .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
-                    .endVertex();
-
-            tessellator.getBuilder()
-                    .vertex((float) ((float)x + (sin * radiusDouble)), (float) ((float)y + (cos * radiusDouble)), 0)
-                    .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
-                    .endVertex();
-
-            tessellator.getBuilder()
-                    .vertex((float) ((float)x + (sin * radius)), (float) ((float)y + (cos * radius)), 0)
-                    .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
-                    .endVertex();
-
+            VertexConsumer vertexconsumer = bufferSource.getBuffer(pRenderType);
+            vertexconsumer.vertex(matrix4f, (float) (x + (osin * radius)), (float) (y + (ocos * radius)), 0).color(red, green, blue, alpha).endVertex();
+            vertexconsumer.vertex(matrix4f, (float) x, (float) y, 0).color(red, green, blue, alpha).endVertex();
+            vertexconsumer.vertex(matrix4f, (float) (x + (sin * radius)), (float) (y + (cos * radius)), 0).color(red, green, blue, alpha).endVertex();
+            vertexconsumer.vertex(matrix4f, (float) (x + (sin * radius)), (float) (y + (cos * radius)), 0).color(red, green, blue, alpha).endVertex();
 
             osin = sin;
             ocos = cos;
 
             if (b > progress) break;
         }
-        tessellator.end();
+
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+        RenderSystem.disableBlend();
+    }
+
+    public static void circleDoubleProgress(
+            double x, double y,
+            float radius, float radiusDouble,
+            float progress, float initialDegree, int segment, int color,
+            Matrix4f matrix4f, MultiBufferSource.BufferSource bufferSource, RenderType pRenderType) {
+
+        float a = 360F / segment;
+        float b;
+
+        double degree, sin, cos;
+        double osin = 0;
+        double ocos = 0;
+
+
+        RenderSystem.enableBlend();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+
+
+        for (int i = 0; i <= segment; ++i) {
+
+            b = a * i;
+            if (b < progress)
+                degree = (initialDegree + b) * Math.PI / 180D;
+            else
+                degree = (initialDegree + progress) * Math.PI / 180D;
+
+            sin = Math.sin(-degree);
+            cos = Math.cos(-degree);
+
+            float red = ((color >> 16) & 0xff) / 255f;
+            float green = ((color >> 8) & 0xff) / 255f;
+            float blue = ((color) & 0xff) / 255f;
+            float alpha = ((color >> 24) & 0xff) / 255f;
+
+            if(b <= progress) {
+                VertexConsumer vertexconsumer = bufferSource.getBuffer(pRenderType);
+                vertexconsumer.vertex(matrix4f, (float) (x + (osin * radius)), (float) (y + (ocos * radius)), 0).color(red, green, blue, alpha).endVertex();
+                vertexconsumer.vertex(matrix4f, (float) ((float) x + (osin * radiusDouble)), (float) ((float) y + (ocos * radiusDouble)), 0).color(red, green, blue, alpha).endVertex();
+                vertexconsumer.vertex(matrix4f, (float) ((float) x + (sin * radiusDouble)), (float) ((float) y + (cos * radiusDouble)), 0).color(red, green, blue, alpha).endVertex();
+                vertexconsumer.vertex(matrix4f, (float) ((float) x + (sin * radius)), (float) ((float) y + (cos * radius)), 0).color(red, green, blue, alpha).endVertex();
+            }
+
+
+            boolean end = b > progress;
+
+
+            if(end) break;
+
+            osin = sin;
+            ocos = cos;
+
+
+        }
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         RenderSystem.disableBlend();
     }
 

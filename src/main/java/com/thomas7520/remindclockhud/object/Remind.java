@@ -9,7 +9,6 @@ public class Remind {
 
     private boolean paused;
 
-
     public Remind(String name, long time, boolean ringing, boolean paused) {
         this.name = name;
         this.time = time;

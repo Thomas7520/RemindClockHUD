@@ -4,6 +4,7 @@ import com.thomas7520.remindclockhud.RemindClockHUD;
 import com.thomas7520.remindclockhud.screens.buttons.CustomButton;
 import com.thomas7520.remindclockhud.screens.chronometer.ChronometerScreen;
 import com.thomas7520.remindclockhud.screens.clock.ClockScreen;
+import com.thomas7520.remindclockhud.screens.timer.TimerScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
@@ -62,8 +63,37 @@ public class MenuScreen extends Screen {
                 guiGraphics.drawString(font, chronometerTitle.getString(), getX() + getWidth() / 2f - (font.width(chronometerTitle.getString()) / 2f), getY() + 55, Color.WHITE.getRGB(), false);
             }
         });
-        
-        Button alarmButton = addRenderableWidget(new CustomButton(guiLeft - 170 + 95 * 2, guiTop - 25, 50, 50, Component.empty(), p_93751_ -> {
+
+        Button remindButton = addRenderableWidget(new CustomButton(guiLeft - 170 + 95 * 2, guiTop - 25, 50, 50, Component.empty(), p_93751_ -> {
+            minecraft.setScreen(new TimerScreen(this));
+        }, Supplier::get){
+
+            @Override
+            public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+
+
+                super.render(guiGraphics, mouseX, mouseY, partialTick);
+                guiGraphics.blit(new ResourceLocation(RemindClockHUD.MODID, "textures/remind.png"), getX() + 5, getY() + 2, 0, 0F, 0F, 40, 40, 40, 40);
+
+                Component remindTitle = Component.translatable("config.remind");
+
+                guiGraphics.drawString(font, remindTitle.getString(), getX() + getWidth() / 2f - (font.width(remindTitle.getString()) / 2f), getY() + 55, Color.WHITE.getRGB(), false);
+
+            }
+        });
+
+        Component discordLink = Component.translatable("config.needhelp");
+
+        addRenderableWidget(Button.builder(discordLink, p_93751_ -> this.minecraft.setScreen(new ConfirmLinkScreen((p_169337_) -> {
+            if (p_169337_) {
+                Util.getPlatform().openUri("https://discord.gg/xTqj3ZSeH4");
+            }
+
+            this.minecraft.setScreen(this);
+        }, "https://discord.gg/xTqj3ZSeH4", true))).bounds(guiLeft - 100, height - 40, 200, 20)
+                .build());
+
+        Button alarmButton = addRenderableWidget(new CustomButton(guiLeft - 170 + 95 * 3, guiTop - 25, 50, 50, Component.empty(), p_93751_ -> {
         }, Supplier::get){
 
             @Override
@@ -81,39 +111,6 @@ public class MenuScreen extends Screen {
 
         alarmButton.active = false;
         alarmButton.setTooltip(Tooltip.create(Component.literal("Now available yet. Follow progress on discord").withStyle(ChatFormatting.RED)));
-
-        Button remindButton = addRenderableWidget(new CustomButton(guiLeft - 170 + 95 * 3, guiTop - 25, 50, 50, Component.empty(), p_93751_ -> {
-        }, Supplier::get){
-
-            @Override
-            public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-
-
-                super.render(guiGraphics, mouseX, mouseY, partialTick);
-                guiGraphics.blit(new ResourceLocation(RemindClockHUD.MODID, "textures/remind.png"), getX() + 5, getY() + 2, 0, 0F, 0F, 40, 40, 40, 40);
-
-                Component remindTitle = Component.translatable("config.remind");
-
-                guiGraphics.drawString(font, remindTitle.getString(), getX() + getWidth() / 2f - (font.width(remindTitle.getString()) / 2f), getY() + 55, Color.WHITE.getRGB(), false);
-
-            }
-        });
-
-        remindButton.active = false;
-        remindButton.setTooltip(Tooltip.create(Component.literal("Now available yet. Follow progress on discord").withStyle(ChatFormatting.RED)));
-
-        Component discordLink = Component.translatable("config.needhelp");
-
-        addRenderableWidget(Button.builder(discordLink, p_93751_ -> this.minecraft.setScreen(new ConfirmLinkScreen((p_169337_) -> {
-            if (p_169337_) {
-                Util.getPlatform().openUri("https://discord.gg/xTqj3ZSeH4");
-            }
-
-            this.minecraft.setScreen(this);
-        }, "https://discord.gg/xTqj3ZSeH4", true))).bounds(guiLeft - 100, height - 40, 200, 20)
-                .build());
-
-        super.init();
     }
 
     @Override
