@@ -3,6 +3,7 @@ package com.thomas7520.remindclockhud;
 
 import com.thomas7520.remindclockhud.object.Chronometer;
 import com.thomas7520.remindclockhud.object.Clock;
+import com.thomas7520.remindclockhud.object.Timer;
 import com.thomas7520.remindclockhud.util.RemindClockConfig;
 import com.thomas7520.remindclockhud.util.RemindClockUtil;
 import net.minecraft.client.KeyMapping;
@@ -27,6 +28,8 @@ public class RemindClockHUD {
 
     private static Clock clock;
     private static Chronometer chronometer;
+
+    private static Timer timer;
 
     public RemindClockHUD() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -73,6 +76,7 @@ public class RemindClockHUD {
                 chronometer.rgbSpeedBackground.get(), chronometer.textRightToLeftDirection.get(), chronometer.backgroundRightToLeftDirection.get(),
                 chronometer.idleRender.get(), chronometer.posX.get(), chronometer.posY.get());
 
+        timer = new Timer();
         //LOGGER.info(RemindTimerUtil.getGlobalAlarmsMap().size() + " alarms loaded");
         //LOGGER.info(RemindTimerUtil.getGlobalRemindsMap().size() + " reminds loaded");
     }
@@ -99,5 +103,9 @@ public class RemindClockHUD {
     
     public static Chronometer getChronometer() {
         return chronometer;
+    }
+
+    public static Timer getTimer() {
+        return timer;
     }
 }

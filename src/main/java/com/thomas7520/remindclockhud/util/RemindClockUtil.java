@@ -121,7 +121,7 @@ public class RemindClockUtil {
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
 
-        for (int i = 0; i <= segment; ++i) {
+        for (float i = 0; i <= segment; i+=0.01f) {
 
             b = a * i;
             if (b < progress)

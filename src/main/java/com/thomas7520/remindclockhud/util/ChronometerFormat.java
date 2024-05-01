@@ -24,6 +24,6 @@ public enum ChronometerFormat {
     }
 
     public String formatTime(long milliseconds) {
-        return DurationFormatUtils.formatDuration(System.currentTimeMillis() - milliseconds, format, true);
+        return DurationFormatUtils.formatDuration(Math.abs(System.currentTimeMillis() - milliseconds), format, true);
     }
 }
