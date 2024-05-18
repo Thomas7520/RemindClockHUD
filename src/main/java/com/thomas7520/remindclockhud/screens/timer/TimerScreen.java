@@ -1,23 +1,27 @@
 package com.thomas7520.remindclockhud.screens.timer;
 
 import com.thomas7520.remindclockhud.RemindClockHUD;
+import com.thomas7520.remindclockhud.object.Remind;
 import com.thomas7520.remindclockhud.object.Timer;
 import com.thomas7520.remindclockhud.util.ChronometerFormat;
 import com.thomas7520.remindclockhud.util.RemindClockUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import org.checkerframework.checker.units.qual.C;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class TimerScreen extends Screen {
 
@@ -31,6 +35,8 @@ public class TimerScreen extends Screen {
     private Button buttonPause;
     private Button buttonLaunch;
     private float percentage;
+    private List<Remind> reminds = new ArrayList<>();
+    private RemindListWidget remindListWidget;
 
     public TimerScreen(Screen lastScreen) {
         super(Component.translatable("timer.title"));
@@ -38,6 +44,10 @@ public class TimerScreen extends Screen {
         this.lastScreen = lastScreen;
         this.timer = RemindClockHUD.getTimer();
         timer.setEnable(true);
+
+        for (int i = 0; i < 15; i++) {
+            reminds.add(new Remind("Test" + i, 643, false, false));
+        }
     }
 
     @Override
@@ -52,6 +62,12 @@ public class TimerScreen extends Screen {
 
     @Override
     protected void init() {
+
+        this.remindListWidget = new RemindListWidget(this, width - width / 2 - 40, 40, height - 40);
+
+        remindListWidget.setLeftPos(width / 2);
+
+        this.addRenderableWidget(remindListWidget);
 
         this.addRenderableWidget(Button.builder(Component.literal("timer.add"), p_93751_ -> {
 
@@ -208,6 +224,7 @@ public class TimerScreen extends Screen {
             double timerX = width / 4d - font.width(timeLeft) * 2 / 2d;
             double timerY = height / 2d - 30;
 
+            pGuiGraphics.pose().pushPose();
             pGuiGraphics.pose().translate(timerX, timerY, 0);
 
             pGuiGraphics.pose().scale(2,2,2);
@@ -227,7 +244,10 @@ public class TimerScreen extends Screen {
             pGuiGraphics.pose().translate(dateEndX, dateEndY, 0);
             pGuiGraphics.drawString(font, Component.literal(endString), 0,40, timer.isPaused() ? Color.GRAY.getRGB() : Color.WHITE.getRGB(), false);
             pGuiGraphics.pose().translate(-dateEndX, -dateEndY, 0);
+            pGuiGraphics.pose().popPose();
         }
+
+        pGuiGraphics.drawString(font, "Reminds", remindListWidget.getLeft() + remindListWidget.getWidth() / 2 - font.width("Reminds") / 2, remindListWidget.getTop() - 20, Color.WHITE.getRGB(), false);
     }
 
     @Override
@@ -243,5 +263,10 @@ public class TimerScreen extends Screen {
     @Override
     public void onClose() {
         minecraft.setScreen(lastScreen);
+    }
+
+    public <T extends ObjectSelectionList.Entry<T>> void buildRemindList(Consumer<T> remindListViewConsumer, Function<Remind, T> newEntry)
+    {
+        reminds.forEach(remind -> remindListViewConsumer.accept(newEntry.apply(remind)));
     }
 }
