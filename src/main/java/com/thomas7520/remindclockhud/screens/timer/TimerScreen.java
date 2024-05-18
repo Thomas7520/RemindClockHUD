@@ -35,7 +35,7 @@ public class TimerScreen extends Screen {
     private Button buttonPause;
     private Button buttonLaunch;
     private float percentage;
-    private List<Remind> reminds = new ArrayList<>();
+    private List<Remind> reminds;
     private RemindListWidget remindListWidget;
 
     public TimerScreen(Screen lastScreen) {
@@ -44,6 +44,10 @@ public class TimerScreen extends Screen {
         this.lastScreen = lastScreen;
         this.timer = RemindClockHUD.getTimer();
         timer.setEnable(true);
+
+        this.reminds = RemindClockUtil.getReminds();
+
+        this.reminds.clear();
 
         for (int i = 0; i < 15; i++) {
             reminds.add(new Remind("Test" + i, 643, false, false));
@@ -55,8 +59,6 @@ public class TimerScreen extends Screen {
         for (EditBox editBox : editBoxes) {
             editBox.tick();
         }
-
-
         super.tick();
     }
 
@@ -259,6 +261,7 @@ public class TimerScreen extends Screen {
         }
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
+
 
     @Override
     public void onClose() {
